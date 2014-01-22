@@ -8,14 +8,14 @@
 
 const unsigned long MAX_OPS = 200000000;
 
-void float_ops(int n){
+void float_ops(unsigned long n){
     float a = 99.9999999999;
     float b = 999.999999999;
     float c = 9999.99999999;
     float d = 99999.9999999;
     unsigned long i;
 
-    for(i=0; i<100000000; i++){
+    for(i=0; i<n; i++){
         a+=.99;
         b+=.99;
         c+=.99;
@@ -24,14 +24,14 @@ void float_ops(int n){
     return;
 }
 
-void int_ops(int n){
+void int_ops(unsigned long n){
     int a = -9999999;
     int b = 9999999;
     int c = 9999999;
     int d = 9999999;
     unsigned long i;
 
-    for(i=0; i<100000000; i++){
+    for(i=0; i<n; i++){
         a+=1;
         b+=1;
         c+=1;
@@ -63,10 +63,11 @@ int main(int argc, char* argv[])
     float secs;
     std::vector<std::thread> threads;
     
-    begin = clock();
+  //  begin = clock();
     for(int i=0; i < numThreads; i++){
         threads.push_back(std::thread(float_ops, num_ops));
     }
+    begin = clock();
     for(int i=0; i < numThreads; i++){
         (threads.back()).join();
         threads.pop_back();
@@ -79,7 +80,14 @@ int main(int argc, char* argv[])
     printf("%f FLOPS.\n",(MAX_OPS*4)/(secs*1000000000));
 
     begin = clock();
-    int_ops(num_ops);
+    for(int i=0; i < numThreads; i++){
+        threads.push_back(std::thread(int_ops, num_ops));
+    }
+    begin = clock();
+    for(int i=0; i < numThreads; i++){
+        (threads.back()).join();
+        threads.pop_back();
+    }
     end = clock();
     time = end - begin;
     secs = ((float)time)/CLOCKS_PER_SEC;

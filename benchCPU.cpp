@@ -67,6 +67,10 @@ int main(int argc, char* argv[])
     for(int i=0; i < numThreads; i++){
         threads.push_back(std::thread(float_ops, num_ops));
     }
+    for(int i=0; i < numThreads; i++){
+        (threads.back()).join();
+        threads.pop_back();
+    }
     end = clock();
     time = end - begin;
     secs = ((float)time)/CLOCKS_PER_SEC;

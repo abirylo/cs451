@@ -63,11 +63,11 @@ int main(int argc, char* argv[])
     float secs;
     std::vector<std::thread> threads;
     
-  //  begin = clock();
+    begin = clock();
     for(int i=0; i < numThreads; i++){
         threads.push_back(std::thread(float_ops, num_ops));
     }
-    begin = clock();
+  //  begin = clock();
     for(int i=0; i < numThreads; i++){
         (threads.back()).join();
         threads.pop_back();
@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
     secs = ((float)time)/CLOCKS_PER_SEC;
 
     printf("Began at %lu.  Ended at %lu.\nTook %lu clicks.  Took %f secs.\n",begin, end, time, secs);
-    printf("%f FLOPS.\n",(MAX_OPS*4)/(secs*1000000000));
+    printf("%f FLOPS.\n",(MAX_OPS*4*2)/(secs*1000000000));
 
     begin = clock();
     for(int i=0; i < numThreads; i++){

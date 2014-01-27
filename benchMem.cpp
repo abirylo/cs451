@@ -2,11 +2,12 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include <unistd.h>
 
 const size_t B = 1;
 const size_t KB = 1024;
 const size_t MB = 1048576;
-const unsigned long NUMINTS = 2621440; //number of ints in 10MB
+const int NUM_LOOPS = 20;
 
 struct results_t {
     float throughput;
@@ -52,6 +53,8 @@ results_t memTest(size_t size){
 int main(int argv, char* argc[]){
     size_t size = 0;
     results_t r;
+    float avgThroughput=0.0;
+    float avgLatency = 0.0;
 
     if(argv != 2){
         fprintf(stderr, "Please identify a block size (B, KB, or MB)");
@@ -66,11 +69,18 @@ int main(int argv, char* argc[]){
         size = MB;
     }
 
-    for(int i=0; i<10; i++){
+    for(int i=0; i<NUM_LOOPS; i++){
         r = memTest(size);
-        printf("Throughput: %f MB/Sec\n", r.throughput);
-        printf("Latency per operation: %2.2f ms\n", r.latency);
+        avgThroughput += r.throughput;
+        avgLatency += r.latency;
+//        printf("Throughput: %f MB/Sec\n", r.throughput);
+//        printf("Latency per operation: %2.2f ms\n", r.latency);
     }
+
+    avgThroughput /= NUM_LOOPS;
+    avgLatency /= NUM_LOOPS;
+
+    printf("The average throughput was: %f MB/sec\nThe average latency was: %f ms\n", avgThroughput, avgLatency);
  
     return 0;
 }

@@ -8,40 +8,59 @@ const size_t B = 1;
 const size_t KB = 1024;
 const size_t MB = 1048576;
 const int NUM_LOOPS = 20;
+const int CHUNK_SIZE = 200; //size of memory to carve out, in MB
 
 struct results_t {
     float throughput;
     float latency;
 };
 
+void sequential(void* lowptr, void* highptr, size_t size, int numOps){
+	char *ptr1, *ptr2;
+	ptr1 = (char*)lowptr;
+	ptr2 = ptr1+size;
+	
+	for(int i=0; i<numOps; i++){
+		memcpy(ptr1, ptr2, size);
+		ptr1 += size;
+		ptr2 += size;
+	}
+
+	return;
+}
+
+void random_access(void* lowptr, void* highptr, size_t size, int numOps){
+	char *ptr1, *ptr2;
+	int r1, r2;
+
+	for(int i=0; i<numOps; i++){
+		r1 = rand() % ((CHUNK_SIZE*MB)/size);
+		r2 = rand() % ((CHUNK_SIZE*MB)/size);
+		ptr1 = (char*)lowptr+r1;
+		ptr2 = (char*)lowptr+r2;
+		memcpy(ptr1, ptr2, size);
+	}
+	return;
+}
 results_t memTest(size_t size){
     results_t results;
     clock_t begin, end, clicks;
     float secs;
-    char *ptr1, *ptr2, *endptr;
+ 	void* endptr;
     void* mem;
-    int numOps = 0;
+    int numOps = (CHUNK_SIZE*MB)/size;
 
-    mem = malloc(MB*100);
-    ptr1 = (char*)mem;
-    ptr2 = ptr1+size;
-	endptr = (char*)((long)ptr1+100*MB);
+    mem = malloc(MB*CHUNK_SIZE);
+	endptr = (char*)mem+(CHUNK_SIZE*MB);
 //	printf("ptr1=%p\nptr2=%p\nendptr=%p\n",ptr1,ptr2,endptr);
 
     begin = clock();
-        while(ptr1<endptr){
-            memcpy(ptr1, ptr2, size);
-//	printf("copying from %p to %p, operation number: %d\n",ptr1,ptr2,numOps);
-            ptr1+=size;
-            ptr2+=size;
-		numOps++;
-        }
-    
+	sequential(mem, endptr, size, numOps);
+//	random_access(mem, endptr, size, numOps);
     end = clock();
     clicks = end - begin;
     secs = ((float)clicks)/CLOCKS_PER_SEC;
-    
-    results.throughput = 100/secs;
+    results.throughput = CHUNK_SIZE/secs;
     results.latency = numOps/(secs*1000);
 
     free(mem);

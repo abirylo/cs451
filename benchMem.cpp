@@ -7,8 +7,8 @@
 const size_t B = 1;
 const size_t KB = 1024;
 const size_t MB = 1048576;
-const int NUM_LOOPS = 20;
-const int CHUNK_SIZE = 200; //size of memory to carve out, in MB
+const int NUM_LOOPS = 10;
+const int CHUNK_SIZE = 500; //size of memory to carve out, in MB
 
 struct results_t {
     float throughput;
@@ -42,21 +42,20 @@ void random_access(void* lowptr, void* highptr, size_t size, int numOps){
 	}
 	return;
 }
-results_t memTest(size_t size){
+results_t memTest(size_t size, char test){
     results_t results;
     clock_t begin, end, clicks;
     float secs;
  	void* endptr;
     void* mem;
-    int numOps = (CHUNK_SIZE*MB)/size;
+    int numOps = (size == B) ? 52428800 : ((CHUNK_SIZE*MB)/size);
 
     mem = malloc(MB*CHUNK_SIZE);
 	endptr = (char*)mem+(CHUNK_SIZE*MB);
 //	printf("ptr1=%p\nptr2=%p\nendptr=%p\n",ptr1,ptr2,endptr);
 
     begin = clock();
-	sequential(mem, endptr, size, numOps);
-//	random_access(mem, endptr, size, numOps);
+	(test == 'S') ? sequential(mem, endptr, size, numOps) : random_access(mem, endptr, size, numOps);
     end = clock();
     clicks = end - begin;
     secs = ((float)clicks)/CLOCKS_PER_SEC;
@@ -75,8 +74,8 @@ int main(int argv, char* argc[]){
     float avgThroughput=0.0;
     float avgLatency = 0.0;
 
-    if(argv != 2){
-        fprintf(stderr, "Please identify a block size (B, KB, or MB)");
+    if(argv != 3){
+        fprintf(stderr, "Usage: benchMem <size (B, KB, MB)> <(S)equential, (R)andom>");
         return 1;
     }
     
@@ -88,8 +87,10 @@ int main(int argv, char* argc[]){
         size = MB;
     }
 
+	char SorR = *argc[2];
+
     for(int i=0; i<NUM_LOOPS; i++){
-        r = memTest(size);
+        r = memTest(size, SorR);
         avgThroughput += r.throughput;
         avgLatency += r.latency;
 //        printf("Throughput: %f MB/Sec\n", r.throughput);
@@ -100,6 +101,7 @@ int main(int argv, char* argc[]){
     avgLatency /= NUM_LOOPS;
 
     printf("The average throughput was: %f MB/sec\nThe average latency was: %f ms\n", avgThroughput, avgLatency);
- 
+	printf("The memory was accessed %s.\n", (SorR == 'S') ? "sequentially" : "randomly"); 
+
     return 0;
 }

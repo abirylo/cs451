@@ -6,37 +6,102 @@
 #include <thread>
 #include <vector>
 
-const unsigned long MAX_OPS = 200000000;
+const int M = 500;
+const int N = 500;
+const int P = 500;
 
-void float_ops(unsigned long n){
-    float a = 99.9999999999;
-    float b = 999.999999999;
-    float c = 9999.99999999;
-    float d = 99999.9999999;
-    unsigned long i;
+void int_mult(int A[M][N], int B[N][P]){
+	int C[M][P];
+	for(int i = 0; i<M; i++){
+		for(int j = 0; j<N; j++){
+			int sum = 0;
+			for(int k = 0; k<P; k++){
+				sum += A[i][k] * B[k][j];
+			}
+		C[i][j] = sum;
+		}
+	}
+	return;
+}
 
-    for(i=0; i<n; i++){
-        a+=.99;
-        b+=.99;
-        c+=.99;
-        d+=.99;
-    }
+void float_mult(float A[M][N], float B[N][P]){
+	float C[M][P];
+	for(int i = 0; i<M; i++){
+		for(int j = 0; j<N; j++){
+			float sum = 0;
+			for(int k = 0; k<P; k++){
+				sum += A[i][k] * B[k][j];
+			}
+		C[i][j] = sum;
+		}
+	}
+	return;
+}
+
+void float_ops(int numThreads){
+	struct timespec start, finish;
+	float A[M][N], B[M][N];
+	std::vector<std::thread> threads;
+	float numOps = (float)(M*N*P);
+	numOps *= numThreads;
+
+	for(int i=0; i<M; i++){
+		for(int j=0; j<N; j++){
+			A[i][j] = (float)rand();
+			B[i][j] = (float)rand();
+		}
+	}
+	
+	clock_gettime(CLOCK_MONOTONIC, &start);
+	for(int i=0; i<numThreads; i++){
+		threads.push_back(std::thread(float_mult, A, B));
+	}
+	while(!threads.empty()){
+		(threads.back()).join();
+		threads.pop_back();
+	}
+	clock_gettime(CLOCK_MONOTONIC, &finish);
+	double secs = (finish.tv_sec - start.tv_sec);
+	secs += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+
+	float FLOPS = (numOps)/(secs);
+	FLOPS /= 1000000000;
+
+	printf("%f\t", FLOPS);
+
     return;
 }
 
-void int_ops(unsigned long n){
-    int a = -9999999;
-    int b = 9999999;
-    int c = 9999999;
-    int d = 9999999;
-    unsigned long i;
+void int_ops(int numThreads){
+	int A[M][N], B[M][N];
+	struct timespec start, finish;
+	std::vector<std::thread> threads;
+	float numOps = (float)(M*N*P);
+	numOps *= numThreads;
 
-    for(i=0; i<n; i++){
-        a+=1;
-        b+=1;
-        c+=1;
-        d+=1;
-    }
+	for(int i=0; i<M; i++){
+		for(int j=0; j<N; j++){
+			A[i][j] = (int)rand();
+			B[i][j] = (int)rand();
+		}
+	}
+
+	clock_gettime(CLOCK_MONOTONIC, &start);
+	for(int i=0; i<numThreads; i++){
+		threads.push_back(std::thread(int_mult, A, B));
+	}
+	while(!threads.empty()){
+		(threads.back()).join();
+		threads.pop_back();
+	}
+	clock_gettime(CLOCK_MONOTONIC, &finish);
+	double secs = (finish.tv_sec - start.tv_sec);
+	secs += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+
+	float IOPS = (numOps)/(secs);
+	IOPS /= 1000000000;
+	printf("%f\n", IOPS);
+
     return;
 }
 
@@ -57,44 +122,9 @@ int main(int argc, char* argv[])
         fprintf(stderr, "Usage: ./benchCPU -n [number of threads]\n");
         return 1;
     }
-
-    unsigned long num_ops = MAX_OPS/numThreads;
-    clock_t begin, end, time;
-    float secs;
-    std::vector<std::thread> threads;
-    
-    begin = clock();
-    for(int i=0; i < numThreads; i++){
-        threads.push_back(std::thread(float_ops, num_ops));
-    }
-  //  begin = clock();
-    for(int i=0; i < numThreads; i++){
-        (threads.back()).join();
-        threads.pop_back();
-    }
-    end = clock();
-    time = end - begin;
-    secs = ((float)time)/CLOCKS_PER_SEC;
-
-    printf("Began at %lu.  Ended at %lu.\nTook %lu clicks.  Took %f secs.\n",begin, end, time, secs);
-    printf("%f FLOPS.\n",(MAX_OPS*4*2)/(secs*1000000000));
-
-    begin = clock();
-    for(int i=0; i < numThreads; i++){
-        threads.push_back(std::thread(int_ops, num_ops));
-    }
-    begin = clock();
-    for(int i=0; i < numThreads; i++){
-        (threads.back()).join();
-        threads.pop_back();
-    }
-    end = clock();
-    time = end - begin;
-    secs = ((float)time)/CLOCKS_PER_SEC;
-
-    printf("Began at %lu.  Ended at %lu.\nTook %lu clicks.  Took %f secs.\n",begin, end, time, secs);
-    printf("%f IOPS.\n",(MAX_OPS*4)/(secs*1000000000));
-
+	printf("%d\t",numThreads);
+	float_ops(numThreads);
+	int_ops(numThreads);
 
     return 0;
 }

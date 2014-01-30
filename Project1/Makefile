@@ -1,21 +1,21 @@
-CC = g++
-CFLAGS = -c -Wall -std=c++11 -Wl,--no-as-needed
+CC = gcc
+CFLAGS = -c -Wall -std=gnu99
 
 all: cpu mem
 
-cpu: benchCPU.o
-	$(CC) benchCPU.o -o benchCPU -pthread 
+cpu: cpu_bench.o
+	$(CC) cpu_bench.o -o cpu_bench -lpthread
 
-benchCPU.o: benchCPU.cpp
-	$(CC) $(CFLAGS) benchCPU.cpp
+cpu_bench.o: cpu_bench.c
+	$(CC) $(CFLAGS) cpu_bench.c
 
-mem: benchMem.o
-	$(CC) benchMem.o -o benchMem
+mem: mem_bench.o
+	$(CC) mem_bench.o -o mem_bench
 
-benchMem.o: benchMem.cpp
-	$(CC) $(CFLAGS) benchMem.cpp
+mem_bench.o: mem_bench.c
+	$(CC) $(CFLAGS) mem_bench.c
 
 clean:
-	rm -rf *.o benchCPU benchMem
+	rm -rf *.o cpu_bench mem_bench
     
 

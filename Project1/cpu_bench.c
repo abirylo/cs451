@@ -3,10 +3,14 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include <sys/time.h>
 #include <pthread.h>
 
 unsigned long MAX_OPS = 2000000000;
+
+double timeDiff(struct timespec *start, struct timespec *end){
+	return (double)(end->tv_sec-start->tv_sec)+((end->tv_nsec-start->tv_nsec)/1000000000.0);
+}
 
 void* cpuInt(void* arg)
 {   
@@ -146,10 +150,13 @@ int main(int argc, char** argv)
         }
     }
     
-    clock_t start, stop;
+//    clock_t start, stop;
+    struct timespec start, stop;
+	double secs;
     pthread_t cpu_threads[threads]; 
     
-    start = clock();
+//    start = clock();
+    clock_gettime(CLOCK_MONOTONIC, &start);
     for(int i=0; i<threads; i++)
     {
        pthread_create(&cpu_threads[i], NULL, cpuInt, NULL);
@@ -159,12 +166,16 @@ int main(int argc, char** argv)
     {
         pthread_join(cpu_threads[i], NULL);
     }
-    stop = clock();
-    printf("Start Time: %lf, End Time: %lf, Diff: %lf\n", start/1000000., stop/1000000., (stop-start)/1000000.);
-    printf("%lf GIOPS\n", (MAX_OPS*24.*threads)/(((stop-start)/1000000.)*1000000000.)); 
+//    stop = clock();
+    clock_gettime(CLOCK_MONOTONIC, &stop);
+	secs = timeDiff(&start, &stop);
+//    printf("Start Time: %lf, End Time: %lf, Diff: %lf\n", start/1000000., stop/1000000., (stop-start)/1000000.);
+	printf("Time taken: %lf\n", secs);
+    printf("%lf GIOPS\n", (MAX_OPS*24.*threads)/(secs*1000000000.)); 
     
     
-    start = clock();
+//    start = clock();
+    clock_gettime(CLOCK_MONOTONIC, &start);
     for(int i=0; i<threads; i++)
     {
        pthread_create(&cpu_threads[i], NULL, cpuFloat, NULL);
@@ -174,9 +185,13 @@ int main(int argc, char** argv)
     {
         pthread_join(cpu_threads[i], NULL);
     }
-    stop = clock();
-    printf("Start Time: %lf, End Time: %lf, Diff: %lf\n", start/1000000., stop/1000000., (stop-start)/1000000.);
-    printf("%lf GFLOPS\n", (MAX_OPS*24.*threads)/(((stop-start)/1000000.)*1000000000.)); 
+//    stop = clock();
+//    printf("Start Time: %lf, End Time: %lf, Diff: %lf\n", start/1000000., stop/1000000., (stop-start)/1000000.);
+    clock_gettime(CLOCK_MONOTONIC, &stop);
+	secs = timeDiff(&start, &stop);
+//    printf("%lf GFLOPS\n", (MAX_OPS*24.*threads)/(((stop-start)/1000000.)*1000000000.)); 
+	printf("Time taken: %lf\n", secs);
+    printf("%lf GFLOPS\n", (MAX_OPS*24.*threads)/(secs*1000000000.)); 
     
     
     return 0;

@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -c -Wall -std=gnu99
+CFLAGS = -c -Wall -std=gnu99 
 
 all: cpu mem
 

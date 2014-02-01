@@ -1,19 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include <sys/time.h>
 #include <string.h>
 #include <unistd.h>
+#include <pthread.h>
 
 const size_t B = 1;
 const size_t KB = 1024;
 const size_t MB = 1048576;
 const int NUM_LOOPS = 20;
 const int CHUNK_SIZE = 1024; //size of memory to carve out, in MB
+size_t size;
+int MEM_SIZE;
+char seqOrRand;
 
-struct results_t {
-    float throughput;
-    float latency;
-};
+double timeDiff(struct timespec *start, struct timespec *end){
+    return (double)(end->tv_sec-start->tv_sec)+((end->tv_nsec-start->tv_nsec)/1000000000.0);
+}
 
 void sequential(void* lowptr, void* highptr, size_t size, int numOps){
 	char *ptr1, *ptr2;
@@ -41,41 +44,35 @@ void random_access(void* lowptr, void* highptr, size_t size, int numOps){
 	return;
 }
 
-struct results_t memTest(size_t size, char test){
-    struct results_t results;
- //   &results = malloc(sizeof(struct results_t));
-    clock_t begin, end, clicks;
-    float secs;
+void memTest(){
  	void* endptr;
     void* mem;
-    int numOps = (size == B) ? 52428800 : ((CHUNK_SIZE*MB)/size);
+    int numOps = ((CHUNK_SIZE*MB)/size);
 
     mem = malloc(MB*CHUNK_SIZE);
 	endptr = (char*)mem+(CHUNK_SIZE*MB);
 
-    begin = clock();
-	(test == 'S') ? sequential(mem, endptr, size, numOps) : random_access(mem, endptr, size, numOps);
-    end = clock();
-    clicks = end - begin;
-    secs = ((float)clicks)/CLOCKS_PER_SEC;
-//    printf("bytes moved = %lu\n", (numOps*size));
-    results.throughput = (numOps*size)/(MB*secs);
-    results.latency = (secs*1000)/numOps;
-
+	(seqOrRand == 'S') ? sequential(mem, endptr, size, numOps) : random_access(mem, endptr, size, numOps);
+/*
+    clock_gettime(CLOCK_MONOTONIC, &start);
+	random_access(mem, endptr, size, numOps);
+    clock_gettime(CLOCK_MONOTONIC, &stop);
+    secs = timeDiff(&start, &stop);
+    printf("Random access throughput=%f\n", (numOps*size)/(MB*secs));
+    printf("Random access latency=%f\n", (secs*1000)/numOps);
+*/
     free(mem);
         
-    return results;
+    return;
 }
 
 
 int main(int argv, char* argc[]){
-    size_t size = 0;
-    struct results_t r;
-    float avgThroughput=0.0;
-    float avgLatency = 0.0;
+    struct timespec start, stop;
+    double secs;
 
-    if(argv != 3){
-        fprintf(stderr, "Usage: benchMem <size (B, KB, MB)> <(S)equential, (R)andom>");
+    if(argv != 4){
+        fprintf(stderr, "Usage: benchMem <size (B, KB, MB)> <(S)equential or (R)andom> [number of threads]");
         return 1;
     }
     
@@ -87,19 +84,27 @@ int main(int argv, char* argc[]){
         size = MB;
     }
 
-	char SorR = *argc[2];
+    seqOrRand = *argc[2];
 
-    for(int i=0; i<NUM_LOOPS; i++){
-        r = memTest(size, SorR);
-        avgThroughput += r.throughput;
-        avgLatency += r.latency;
+    int threads = atoi(argc[3]);
+    if(threads == 0){
+        fprintf(stderr, "Specify the number of threads");
+        return 1;
     }
 
-    avgThroughput /= NUM_LOOPS;
-    avgLatency /= NUM_LOOPS;
-
-    printf("The average throughput was: %f MB/sec\nThe average latency was: %f ms\n", avgThroughput, avgLatency);
-	printf("The memory was accessed %s.\n", (SorR == 'S') ? "sequentially" : "randomly"); 
+    pthread_t mem_threads[threads];
+    clock_gettime(CLOCK_MONOTONIC, &start);
+    for(int i=0; i<threads; i++){
+        pthread_create(&mem_threads[i], NULL, (void *) &memTest, NULL);
+    }
+    for(int i=0; i<threads; i++){
+        pthread_join(mem_threads[i], NULL);
+    }
+    clock_gettime(CLOCK_MONOTONIC, &stop);
+    secs = timeDiff(&start, &stop);
+    printf("Time taken: %lf\n", secs);
+    printf("Throughput: %lf\n", (CHUNK_SIZE)/(secs));
+    printf("Latency: %lf\n", (secs*1000)/((CHUNK_SIZE*MB)/size));
 
     return 0;
 }

@@ -68,8 +68,8 @@ void memTest(){
 
 
 int main(int argv, char* argc[]){
-    struct timespec start, stop;
-    double secs;
+    //struct timespec start, stop;
+    //double secs;
 
     if(argv != 4){
         fprintf(stderr, "Usage: benchMem <size (B, KB, MB)> <(S)equential or (R)andom> [number of threads]");
@@ -91,17 +91,25 @@ int main(int argv, char* argc[]){
         fprintf(stderr, "Specify the number of threads");
         return 1;
     }
-
+    struct timeval tv;
+    long long start, stop;
+    double secs;
+    
     pthread_t mem_threads[threads];
-    clock_gettime(CLOCK_MONOTONIC, &start);
+//    clock_gettime(CLOCK_MONOTONIC, &start);
+    gettimeofday(&tv, NULL);
+    start = tv.tv_sec*1000000LL + tv.tv_usec;
     for(int i=0; i<threads; i++){
         pthread_create(&mem_threads[i], NULL, (void *) &memTest, NULL);
     }
     for(int i=0; i<threads; i++){
         pthread_join(mem_threads[i], NULL);
     }
-    clock_gettime(CLOCK_MONOTONIC, &stop);
-    secs = timeDiff(&start, &stop);
+//    clock_gettime(CLOCK_MONOTONIC, &stop);
+//    secs = timeDiff(&start, &stop);
+    gettimeofday(&tv, NULL);
+    stop = tv.tv_sec*1000000LL + tv.tv_usec;
+    secs = (stop-start)/1000000.0;
     printf("Time taken: %lf\n", secs);
     printf("Throughput: %lf\n", (CHUNK_SIZE)/(secs));
     printf("Latency: %lf\n", (secs*1000)/((CHUNK_SIZE*MB)/size));

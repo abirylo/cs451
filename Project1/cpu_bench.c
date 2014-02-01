@@ -183,6 +183,8 @@ int main(int argc, char** argv)
     
 //    start = clock();
 //    clock_gettime(CLOCK_MONOTONIC, &start);
+    gettimeofday(&tv, NULL);
+    start = tv.tv_sec*1000000LL + tv.tv_usec;
     for(int i=0; i<threads; i++)
     {
        pthread_create(&cpu_threads[i], NULL, cpuFloat, NULL);
@@ -197,7 +199,10 @@ int main(int argc, char** argv)
 //    clock_gettime(CLOCK_MONOTONIC, &stop);
 //	secs = timeDiff(&start, &stop);
 //    printf("%lf GFLOPS\n", (MAX_OPS*24.*threads)/(((stop-start)/1000000.)*1000000000.)); 
-	printf("Time taken: %lf\n", secs);
+		gettimeofday(&tv, NULL);
+    stop = tv.tv_sec*1000000LL + tv.tv_usec;
+    secs = (stop-start)/1000000.0;
+    printf("Time taken: %lf\n", secs);
     printf("%lf GFLOPS\n", (MAX_OPS*24.*threads)/(secs*1000000000.)); 
     
     

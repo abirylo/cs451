@@ -10,7 +10,7 @@ cpu_bench.o: cpu_bench.c
 	$(CC) $(CFLAGS) cpu_bench.c
 
 mem: mem_bench.o
-	$(CC) mem_bench.o -o mem_bench
+	$(CC) mem_bench.o -o mem_bench -lpthread
 
 mem_bench.o: mem_bench.c
 	$(CC) $(CFLAGS) mem_bench.c

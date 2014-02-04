@@ -6,7 +6,7 @@ date >> $LOGFILE
 
 echo Running CPU Benchmarks...
 echo Threads	GIOPS		GFLOPS >> $LOGFILE
-for a in {1..12}
+for a in {1..8}
 do
 	./cpu_bench -n $a >> $LOGFILE
 done
@@ -26,7 +26,7 @@ echo >> $LOGFILE
 
 echo Running Disk Benchmarks...
 echo Threads	Size	Seq Write T	Seq Write L	Seq Read T	Seq Read L	Rand Write T	Rand Write L	Rand Read T	Rand Read L >> $LOGFILE
-for a in {1..8}
+for a in {1..1}
 do
 	for s in B KB MB GB
 	do

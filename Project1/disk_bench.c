@@ -104,7 +104,7 @@ int main(int argc, char *argv[]){
         numOps = 1024;
     }else if(strcmp(argv[1], "GB")==0){
         size = 1073741824;
-        numOps = 4;
+        numOps = 2;
     }
     if(size == 0){
         fprintf(stderr, "Not a valid size.\n");

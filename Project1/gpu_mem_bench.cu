@@ -69,6 +69,17 @@ int main(int argc, char *argv[]) {
 */
     unsigned char *d_mem_pointer;
     unsigned char *mem_pointer;
+    cudaMemcpyKind dir = cudaMemcpyHostToDevice;
+    if(rw == 'R')
+    {
+      dir = cudaMemcpyDeviceToHost;
+    }
+    else if(rw == 'W')
+    {
+      dir - cudaMemcpyHostToDevice;
+    }
+    
+    
     if(test == 'B')
     {
       
@@ -80,14 +91,13 @@ int main(int argc, char *argv[]) {
     
       for(unsigned long i = 0; i<MEGABYTE; i++)
       {
-        err = cudaMemcpy((void *)&d_mem_pointer[i], (void *)mem_pointer, 1, cudaMemcpyHostToDevice);
+        err = cudaMemcpy((void *)&d_mem_pointer[i], (void *)mem_pointer, 1, dir);
         CHECK_ERR(err);
       }
       
       gettimeofday(&tv, NULL);
       stop = tv.tv_sec*1000000LL + tv.tv_usec;
       secs = (stop-start)/1000000.0;
-      printf("Time taken: %lf\n", secs);
       printf("%lf MB/sec\n", 1.0/(secs)); 
     }
     else if(test == 'K')
@@ -100,14 +110,13 @@ int main(int argc, char *argv[]) {
     
       for(unsigned long i = 0; i<256*MEGABYTE/1024; i++)
       {
-        err = cudaMemcpy((void *)&d_mem_pointer[i*1024], (void *)mem_pointer, 1024, cudaMemcpyHostToDevice);
+        err = cudaMemcpy((void *)&d_mem_pointer[i*1024], (void *)mem_pointer, 1024, dir);
         CHECK_ERR(err);
       }
       
       gettimeofday(&tv, NULL);
       stop = tv.tv_sec*1000000LL + tv.tv_usec;
       secs = (stop-start)/1000000.0;
-      printf("Time taken: %lf\n", secs);
       printf("%lf MB/sec\n", (256.0/1024.0)/(secs)); 
     }
     else if(test == 'M')
@@ -120,14 +129,13 @@ int main(int argc, char *argv[]) {
     
       for(unsigned long i = 0; i<512*10; i++)
       {
-        err = cudaMemcpy((void *)&d_mem_pointer[(i*MEGABYTE)%(512*MEGABYTE)], (void *)mem_pointer, MEGABYTE, cudaMemcpyHostToDevice);
+        err = cudaMemcpy((void *)&d_mem_pointer[(i*MEGABYTE)%(512*MEGABYTE)], (void *)mem_pointer, MEGABYTE, dir);
         CHECK_ERR(err);
       }
       
       gettimeofday(&tv, NULL);
       stop = tv.tv_sec*1000000LL + tv.tv_usec;
       secs = (stop-start)/1000000.0;
-      printf("Time taken: %lf\n", secs);
       printf("%lf MB/sec\n", (512*10)/(secs)); 
     }
     /*err = cudaFree(d_contents);

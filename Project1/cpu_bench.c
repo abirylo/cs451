@@ -151,7 +151,9 @@ int main(int argc, char** argv)
     double secs;
     
     pthread_t cpu_threads[threads]; 
-    
+   
+	printf("%d\t", threads);
+ 
     gettimeofday(&tv, NULL);
     start = tv.tv_sec*1000000LL + tv.tv_usec;
     for(int i=0; i<threads; i++)
@@ -166,9 +168,9 @@ int main(int argc, char** argv)
 	  gettimeofday(&tv, NULL);
     stop = tv.tv_sec*1000000LL + tv.tv_usec;
     secs = (stop-start)/1000000.0;
-    printf("Time taken: %lf\n", secs);
-    printf("%lf GIOPS\n", (MAX_OPS*24.*threads)/(secs*1000000000.)); 
-    
+//    printf("Time taken: %lf\n", secs);
+//    printf("%lf GIOPS\n", (MAX_OPS*24.*threads)/(secs*1000000000.)); 
+	printf("%lf\t", (MAX_OPS*24*threads)/(secs*1000000000));    
     
     gettimeofday(&tv, NULL);
     start = tv.tv_sec*1000000LL + tv.tv_usec;
@@ -184,8 +186,9 @@ int main(int argc, char** argv)
 		gettimeofday(&tv, NULL);
     stop = tv.tv_sec*1000000LL + tv.tv_usec;
     secs = (stop-start)/1000000.0;
-    printf("Time taken: %lf\n", secs);
-    printf("%lf GFLOPS\n", (MAX_OPS*24.*threads)/(secs*1000000000.)); 
+//    printf("Time taken: %lf\n", secs);
+//    printf("%lf GFLOPS\n", (MAX_OPS*24.*threads)/(secs*1000000000.)); 
+	printf("%lf\n", (MAX_OPS*24*threads)/(secs*1000000000));    
     
     
     return 0;

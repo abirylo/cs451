@@ -1,0 +1,30 @@
+Usage of the benchmarking suite
+
+Required Programs
+=======================================
+This suite of benchmarking tools makes use of the GNU Compiler Collection, and the NVidia CUDA Compiler.  You can use the commands 'which gcc' and 'which nvcc' to verify that you have them.
+
+
+Building
+=======================================
+The benchmarking tools can be compiled by running the command:
+make all
+The command:
+make clean
+will remove all of the files created from building the tools.
+
+If only a specific tool is desired, it can be build by using the following commands:
+CPU Benchmarking: make cpu
+Memory Benchmarking: make mem
+Disk Benchmarking: make disk
+GPU Benchmarking: make gpu
+GPU Memory Benchmarking: make gpu_mem
+
+
+Usage
+=======================================
+Running the script 'benchmarks.sh' will run through numerous tests of each of the benchmarks, at varying levels of concurrency.  The output from this will be appended to the 'benchmarks.log' file, in this directory.
+
+However, each of the tests can be run separately.
+
+Running CPU Benchmark:

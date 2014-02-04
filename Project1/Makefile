@@ -15,6 +15,12 @@ mem: mem_bench.o
 mem_bench.o: mem_bench.c
 	$(CC) $(CFLAGS) mem_bench.c
 
+disk: disk_bench.o
+	$(CC) disk_bench.o -o disk_bench -lpthread
+
+disk_bench.o: disk_bench.c
+	$(CC) $(CFLAGS) disk_bench.c
+
 gpu:
 	nvcc -o gpu_bench gpu_bench.cu 
 
@@ -22,6 +28,6 @@ gpu_mem:
 	nvcc -o gpu_mem_bench gpu_mem_bench.cu
 
 clean:
-	rm -rf *.o cpu_bench mem_bench gpu_bench gpu_mem_bench
+	rm -rf *.o cpu_bench mem_bench gpu_bench gpu_mem_bench disk_bench
     
 

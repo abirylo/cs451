@@ -23,7 +23,7 @@ void sequential(void* lowptr, void* highptr, size_t size, int numOps){
 	ptr1 = (char*)lowptr;
 	ptr2 = ptr1+size;
 	
-	for(int i=0; i<numOps; i++){
+	while((void *)ptr2 < highptr){
         ptr1 = (char*)memcpy(ptr1, ptr2, size);
 		ptr2 += size;
 	}
@@ -94,7 +94,7 @@ int main(int argv, char* argc[]){
     struct timeval tv;
     long long start, stop;
     double secs;
-    
+   printf("%d\t%s\t%c\t", threads, argc[1], seqOrRand); 
     pthread_t mem_threads[threads];
 //    clock_gettime(CLOCK_MONOTONIC, &start);
     gettimeofday(&tv, NULL);
@@ -110,9 +110,9 @@ int main(int argv, char* argc[]){
     gettimeofday(&tv, NULL);
     stop = tv.tv_sec*1000000LL + tv.tv_usec;
     secs = (stop-start)/1000000.0;
-    printf("Time taken: %lf\n", secs);
-    printf("Throughput: %lf\n", (CHUNK_SIZE)/(secs));
-    printf("Latency: %lf\n", (secs*1000)/((CHUNK_SIZE*MB)/size));
-
+//    printf("Time taken: %lf\n", secs);
+//    printf("Throughput: %lf\n", (CHUNK_SIZE*threads)/(secs));
+//    printf("Latency: %lf\n", (secs*1000)/(CHUNK_SIZE*MB*threads*8));
+	printf("%lf\t%lf\n", (CHUNK_SIZE*threads)/secs, (secs*1000)/((CHUNK_SIZE*MB/size)*threads));
     return 0;
 }

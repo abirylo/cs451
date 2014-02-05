@@ -66,5 +66,17 @@ All throughput is in MB/sec, and all latency is in ms/byte.
 
 Example:
 sudo ./disk_bench KB 1
-1	KB	
+1	KB	72.649541	0.000013	57.182722	0.000017	22.763860	0.000042	1.496021	0.000637
 
+Running GPU Benchmark:
+The command for running GPU benchmarks is:
+./gpu_bench -n [number of threads] -t [type of test]
+
+Since GPUs are massivly concurrent, the number of threads will often be a multiple of 1024.  However, it can be any number.  The type of test is either 'I' or 'F' for integer or loating point operations, respectively.
+
+The output from this test is labelled.
+
+Example:
+./gpu_bench -n 1024 -t F
+Time taken: 2.201933
+1412.235123 GFLOPS

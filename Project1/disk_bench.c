@@ -136,7 +136,7 @@ int main(int argc, char *argv[]){
 	
 //	printf("Sequential Write:\n");
 //    printf("Time taken: %lf\n", secs);
-	printf("%lf\t%lf\t", (size*numOps*threads)/(secs*1048576), (secs*1000)/(numOps*threads*size*8));
+	printf("%lf\t%lf\t", (size*numOps*threads)/(secs*1048576), (secs*1000)/(numOps*threads*size));
 //    printf("Throughput: %lf MB/sec\n", (size*numOps*threads)/(secs*1048576));
 //    printf("Latency: %lf ms/bit\n", (secs*1000)/(numOps*threads*size*8));
 
@@ -166,7 +166,7 @@ int main(int argc, char *argv[]){
 //    printf("Time taken: %lf\n", secs);
 //    printf("Throughput: %lf MB/sec\n", (size*numOps*threads)/(secs*1048576));
 //    printf("Latency: %lf ms/bit\n", (secs*1000)/(numOps*threads*size*8));
-	printf("%lf\t%lf\t", (size*numOps*threads)/(secs*1048576), (secs*1000)/(numOps*threads*size*8));
+	printf("%lf\t%lf\t", (size*numOps*threads)/(secs*1048576), (secs*1000)/(numOps*threads*size));
 
 	for(int i=0; i<threads; i++){
 		fclose(fd[i]);
@@ -194,7 +194,7 @@ int main(int argc, char *argv[]){
 //    printf("Time taken: %lf\n", secs);
 //    printf("Throughput: %lf MB/sec\n", (size*numOps*threads)/(secs*1048576));
 //    printf("Latency: %lf ms/bit\n", (secs*1000)/(numOps*threads*size*8));
-	printf("%lf\t%lf\t", (size*numOps*threads)/(secs*1048576), (secs*1000)/(numOps*threads*size*8));
+	printf("%lf\t%lf\t", (size*numOps*threads)/(secs*1048576), (secs*1000)/(numOps*threads*size));
 
 	for(int i=0; i<threads; i++){
 		fclose(fd[i]);
@@ -221,7 +221,7 @@ int main(int argc, char *argv[]){
 //    printf("Time taken: %lf\n", secs);
 //    printf("Throughput: %lf MB/sec\n", (size*numOps*threads)/(secs*1048576));
 //    printf("Latency: %lf ms/bit\n", (secs*1000)/(numOps*threads*size*8));
-	printf("%lf\t%lf\n", (size*numOps*threads)/(secs*1048576), (secs*1000)/(numOps*threads*size*8));
+	printf("%lf\t%lf\n", (size*numOps*threads)/(secs*1048576), (secs*1000)/(numOps*threads*size));
 
 	for(int i=0; i<threads; i++){
 		fclose(fd[i]);

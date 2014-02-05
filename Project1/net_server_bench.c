@@ -16,16 +16,17 @@ char mode = 'U';
 int createServerUDP(struct sockaddr_in* sock, int port)
 {
   int sd = 0;
-  if((sd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
+  struct sockaddr_in temp;
+  if((sd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
   { 
     return -1;
   }
-  memset(&sock, 0, sizeof(sock));
+  memset(sock, 0, sizeof(temp));
   sock->sin_family = AF_INET;
   sock->sin_addr.s_addr = htonl(INADDR_ANY);
-  sock->sin_port = htonl(port);
+  sock->sin_port = htons(8000);
 
-  if(bind(sd, (struct sockaddr *)sock, sizeof(sock)) < 0)
+  if(bind(sd, (struct sockaddr *)sock, sizeof(temp)) < 0)
   {
     return -1;
   }
@@ -37,6 +38,8 @@ int createServerUDP(struct sockaddr_in* sock, int port)
 int createServerTCP(struct sockaddr_in* sock, int port)
 {
   int sd = 0;
+  struct sockaddr_in temp;
+
   if((sd = socket(AF_INET, SOCK_DGRAM, IPPROTO_TCP)) < 0)
   { 
     return -1;
@@ -46,7 +49,7 @@ int createServerTCP(struct sockaddr_in* sock, int port)
   sock->sin_addr.s_addr = htonl(INADDR_ANY);
   sock->sin_port = htonl(port);
 
-  if(bind(sd, (struct sockaddr *)sock, sizeof(sock)) < 0)
+  if(bind(sd, (struct sockaddr *)sock, sizeof(temp)) < 0)
   {
     return -1;
   }
@@ -61,7 +64,7 @@ void* networkServer(void* arg)
   struct sockaddr_in server, client;
   char buf[100000];  
   int recvSize = 0;
-
+  unsigned int socklen = sizeof(client);
   if(mode == 'U')
   {
     sd = createServerUDP(&server,((int*)arg)[0]);
@@ -75,13 +78,15 @@ void* networkServer(void* arg)
   {
     return NULL;
   }
-
+  printf("Socket created on port %i. Waiting for data.\n", ((int*)arg)[0]);
+  fflush(stdout);
   for(;;)
   {
     //wait for client 
     if(mode == 'U')
     {
-      if(recvSize = recvfrom(sd,buf,100000,0,(struct sockaddr*)&client, sizeof(client)) < 0)
+      
+      if((recvSize = recvfrom(sd,buf,100000,0,(struct sockaddr*)&client, &socklen)) < 0)
       {
         return NULL;
       }
@@ -113,18 +118,17 @@ int main(int argc, char** argv)
             case 'm':
                 mode = optarg[0];                
             default:
-                printf("Usage: ./benchCPU -n [number of threads]\n");
+                printf("Usage: ./net_server_bench -n [number of threads] -m [mode U(UDP) T(TCP)]\n");
                 return -1;
                 break;
         }
     }
     
     pthread_t net_threads[threads]; 
-    int port = 8000;
+    int port[2] = {8000, 8001};
     for(int i=0; i<threads; i++)
     {
-        pthread_create(&net_threads[i], NULL, networkServer, &port);
-        port++;
+        pthread_create(&net_threads[i], NULL, networkServer, &(port[i]));
     }
     
     for(int i=0; i<threads; i++)

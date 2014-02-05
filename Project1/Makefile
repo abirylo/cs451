@@ -1,7 +1,7 @@
 CC = gcc
-CFLAGS = -c -Wall -std=gnu99 
+CFLAGS = -c -Wall -std=gnu99 -g 
 
-all: net_server cpu mem gpu gpu_mem
+all: net_client net_server cpu mem gpu gpu_mem
 
 cpu: cpu_bench.o
 	$(CC) cpu_bench.o -o cpu_bench -lpthread
@@ -33,7 +33,13 @@ net_server: net_server.o
 net_server.o: net_server_bench.c
 	$(CC) $(CFLAGS) net_server_bench.c
 
+net_client: net_client.o
+	$(CC) net_client_bench.o -o net_client_bench -lpthread
+
+net_client.o: net_client_bench.c
+	$(CC) $(CFLAGS) net_client_bench.c
+
 clean:
-	rm -rf *.o cpu_bench mem_bench gpu_bench gpu_mem_bench disk_bench net_server_bench
+	rm -rf *.o cpu_bench mem_bench gpu_bench gpu_mem_bench disk_bench net_server_bench net_client_bench
     
 

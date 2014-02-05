@@ -24,7 +24,7 @@ int createServerUDP(struct sockaddr_in* sock, int port)
   memset(sock, 0, sizeof(temp));
   sock->sin_family = AF_INET;
   sock->sin_addr.s_addr = htonl(INADDR_ANY);
-  sock->sin_port = htons(8000);
+  sock->sin_port = htons(port);
 
   if(bind(sd, (struct sockaddr *)sock, sizeof(temp)) < 0)
   {

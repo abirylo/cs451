@@ -16,7 +16,7 @@ unsigned long MAX_OPS = 2000000;
 char mode = 'U';
 char test = 'B';
 int bufferSize = 1;
-
+int threads = 1;
 
 int createClientUDP(struct sockaddr_in* sock, int port, char* ip)
 {
@@ -29,7 +29,7 @@ int createClientUDP(struct sockaddr_in* sock, int port, char* ip)
   memset(sock, 0, sizeof(temp));
   sock->sin_family = AF_INET;
   sock->sin_addr.s_addr = inet_addr(ip);
-  sock->sin_port = htons(8000);
+  sock->sin_port = htons(port);
 
   return sd;  
 
@@ -100,7 +100,7 @@ void* networkClient(void* arg)
     gettimeofday(&tv, NULL);
     stop = tv.tv_sec*1000000LL + tv.tv_usec;
     secs = (stop-start)/1000000.0;
-    printf("%lf\t%lf\n", (bufferSize*MAX_OPS)/(secs*1048576),(secs*1000000)/(MAX_OPS*2));
+    printf("%i\t%i\t%c\t%lf\t%lf\n", threads, bufferSize, mode, (bufferSize*MAX_OPS)/(secs*1048576),(secs*1000000)/(MAX_OPS*2));
  
   }
   else if(mode == 'T')
@@ -117,7 +117,6 @@ void* networkClient(void* arg)
 int main(int argc, char** argv)
 {
     char c;
-    int threads = 1;
 
     while ( (c = getopt(argc, argv, "n:l:m:t:") ) != -1) 
     {

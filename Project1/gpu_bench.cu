@@ -152,26 +152,7 @@ int main(int argc, char *argv[]) {
                 return -1;
         }
     }
- //cudaError_t err;
    
-/*  
-    err = cudaMalloc((void **) &d_string_array, sizeof(char**)*array_size); 
-    CHECK_ERR(err); 
-
-    err = cudaMalloc((void **) &d_answer_array, sizeof(bool)*array_size);
-    CHECK_ERR(err);
-      
-    d_answer_array_copy = d_answer_array;
-
-    err = cudaMalloc((void **) &d_command, line_size);
-    CHECK_ERR(err);  
-
-    err = cudaMalloc((void **) &d_contents, array_size*line_size);
-    CHECK_ERR(err);
-      
-    err = cudaMemcpy(d_command, argv[1], strlen(argv[1])+1, cudaMemcpyHostToDevice);
-    CHECK_ERR(err);      
-*/
     struct timeval tv;
     long long start, stop;
     double secs;
@@ -187,8 +168,8 @@ int main(int argc, char *argv[]) {
       gettimeofday(&tv, NULL);
       stop = tv.tv_sec*1000000LL + tv.tv_usec;
       secs = (stop-start)/1000000.0;
-      printf("Time taken: %lf\n", secs);
-      printf("%lf GIOPS\n", (MAX_OPS*24.*threads)/(secs*1000000000.)); 
+      //printf("Time taken: %lf\n", secs);
+      printf("I\t%lf\n", (MAX_OPS*24.*threads)/(secs*1000000000.)); 
     }
     else if(test == 'F')
     {
@@ -201,14 +182,7 @@ int main(int argc, char *argv[]) {
       gettimeofday(&tv, NULL);
       stop = tv.tv_sec*1000000LL + tv.tv_usec;
       secs = (stop-start)/1000000.0;
-      printf("Time taken: %lf\n", secs);
-      printf("%lf GFlOPS\n", (MAX_OPS*24.*threads)/(secs*1000000000.)); 
+      //printf("Time taken: %lf\n", secs);
+      printf("FL\t%lf\n", (MAX_OPS*24.*threads)/(secs*1000000000.)); 
     }
-    /*err = cudaFree(d_contents);
-    CHECK_ERR(err);
-    err = cudaFree(d_string_array);
-    CHECK_ERR(err);
-    err = cudaFree(d_answer_array);
-    CHECK_ERR(err);
- */
 }

@@ -6,9 +6,26 @@ date >> $LOGFILE
 
 echo Running CPU Benchmarks...
 echo Threads	GIOPS		GFLOPS >> $LOGFILE
-for a in {1..8}
+for a in {1..16}
 do
 	./cpu_bench -n $a >> $LOGFILE
+done
+echo >> $LOGFILE
+
+echo Running GPU Benchmanrks...
+echo Type G*OPS >> $LOGFILE
+for a in I F
+do
+  ./gpu_bench -t $a >> $LOGFILE
+done
+echo >> $LOGFILE
+echo Size RW  Throughput >> $LOGFILE
+for a in R W
+do 
+  for s in B K M
+  do
+    ./gpu_mem_bench -r $a -t $s >> $LOGFILE
+  done
 done
 echo >> $LOGFILE
 
@@ -32,6 +49,21 @@ do
 	do
 		./disk_bench $s $a >> $LOGFILE
 	done
+done
+echo >> $LOGFILE
+
+echo Running Networking Benchmarsk...
+echo Threads  Size  Protocol  Throughput  Latency >> $LOGFILE
+for a in {1..2}
+do 
+  ./net_server_bench -n $a &
+  sleep 2
+  for s in B K 6
+  do
+    ./net_client_bench -n $a -l 20000 -t $s >> $LOGFILE
+  done
+  killall net_server_bench
+  sleep 2
 done
 echo >> $LOGFILE
 

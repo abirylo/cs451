@@ -6,7 +6,7 @@
 #include <sys/time.h>
 #include <pthread.h>
 
-unsigned long MAX_OPS = 20000000;
+unsigned long MAX_OPS = 4000000;
 
 void* cpuInt(void* arg)
 {   

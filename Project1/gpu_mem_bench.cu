@@ -49,24 +49,6 @@ int main(int argc, char *argv[]) {
 
     cudaError_t err;
    
-/*  
-    err = cudaMalloc((void **) &d_string_array, sizeof(char**)*array_size); 
-    CHECK_ERR(err); 
-
-    err = cudaMalloc((void **) &d_answer_array, sizeof(bool)*array_size);
-    CHECK_ERR(err);
-      
-    d_answer_array_copy = d_answer_array;
-
-    err = cudaMalloc((void **) &d_command, line_size);
-    CHECK_ERR(err);  
-
-    err = cudaMalloc((void **) &d_contents, array_size*line_size);
-    CHECK_ERR(err);
-      
-    err = cudaMemcpy(d_command, argv[1], strlen(argv[1])+1, cudaMemcpyHostToDevice);
-    CHECK_ERR(err);      
-*/
     unsigned char *d_mem_pointer;
     unsigned char *mem_pointer;
     cudaMemcpyKind dir = cudaMemcpyHostToDevice;
@@ -91,14 +73,17 @@ int main(int argc, char *argv[]) {
     
       for(unsigned long i = 0; i<MEGABYTE; i++)
       {
-        err = cudaMemcpy((void *)&d_mem_pointer[i], (void *)mem_pointer, 1, dir);
+        if(rw == 'W')
+          err = cudaMemcpy((void *)&d_mem_pointer[i], (void *)mem_pointer, 1, dir);
+        else if(rw == 'R')
+          err = cudaMemcpy((void *)mem_pointer, (void *)&d_mem_pointer[i], 1, dir);
         CHECK_ERR(err);
       }
       
       gettimeofday(&tv, NULL);
       stop = tv.tv_sec*1000000LL + tv.tv_usec;
       secs = (stop-start)/1000000.0;
-      printf("%lf MB/sec\n", 1.0/(secs)); 
+      printf("%c\t%c\t%lf\n", rw, test, 1.0/(secs)); 
     }
     else if(test == 'K')
     {
@@ -110,14 +95,17 @@ int main(int argc, char *argv[]) {
     
       for(unsigned long i = 0; i<256*MEGABYTE/1024; i++)
       {
-        err = cudaMemcpy((void *)&d_mem_pointer[i*1024], (void *)mem_pointer, 1024, dir);
+        if(rw == 'W')
+          err = cudaMemcpy((void *)&d_mem_pointer[i*1024], (void *)mem_pointer, 1024, dir);
+        else if(rw == 'R')
+          err = cudaMemcpy((void *)mem_pointer, (void *)&d_mem_pointer[i*1024], 1024, dir);
         CHECK_ERR(err);
       }
       
       gettimeofday(&tv, NULL);
       stop = tv.tv_sec*1000000LL + tv.tv_usec;
       secs = (stop-start)/1000000.0;
-      printf("%lf MB/sec\n", (256.0/1024.0)/(secs)); 
+      printf("%c\t%c\t%lf\n", rw, test, (256.0/1024.0)/(secs)); 
     }
     else if(test == 'M')
     {
@@ -129,20 +117,18 @@ int main(int argc, char *argv[]) {
     
       for(unsigned long i = 0; i<512*10; i++)
       {
-        err = cudaMemcpy((void *)&d_mem_pointer[(i*MEGABYTE)%(512*MEGABYTE)], (void *)mem_pointer, MEGABYTE, dir);
+        if(rw == 'W')
+          err = cudaMemcpy((void *)&d_mem_pointer[(i*MEGABYTE)%(512*MEGABYTE)], (void *)mem_pointer, MEGABYTE, dir);
+        else if(rw == 'R')
+          err = cudaMemcpy((void *)mem_pointer, (void *)&d_mem_pointer[(i*MEGABYTE)%(512*MEGABYTE)], MEGABYTE, dir);
         CHECK_ERR(err);
       }
       
       gettimeofday(&tv, NULL);
       stop = tv.tv_sec*1000000LL + tv.tv_usec;
       secs = (stop-start)/1000000.0;
-      printf("%lf MB/sec\n", (512*10)/(secs)); 
+      printf("%c\t%c\t%lf\n", rw, test, (512*10)/(secs)); 
     }
-    /*err = cudaFree(d_contents);
+    err = cudaFree(d_mem_pointer);
     CHECK_ERR(err);
-    err = cudaFree(d_string_array);
-    CHECK_ERR(err);
-    err = cudaFree(d_answer_array);
-    CHECK_ERR(err);
- */
 }

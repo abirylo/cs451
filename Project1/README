@@ -1,0 +1,82 @@
+Usage of the benchmarking suite
+
+Required Programs
+=======================================
+This suite of benchmarking tools makes use of the GNU Compiler Collection, and the NVidia CUDA Compiler.  You can use the commands 'which gcc' and 'which nvcc' to verify that you have them.
+
+
+Building
+=======================================
+The benchmarking tools can be compiled by running the command:
+make all
+The command:
+make clean
+will remove all of the files created from building the tools.
+
+If only a specific tool is desired, it can be build by using the following commands:
+CPU Benchmarking: make cpu
+Memory Benchmarking: make mem
+Disk Benchmarking: make disk
+GPU Benchmarking: make gpu
+GPU Memory Benchmarking: make gpu_mem
+
+
+Usage
+=======================================
+Running the script 'benchmarks.sh' will run through numerous tests of each of the benchmarks, at varying levels of concurrency.  The output from this will be appended to the 'benchmarks.log' file, in this directory.
+
+However, each of the tests can be run separately.
+
+Running CPU Benchmark:
+The command for running the CPU benchmark is:
+./cpu_bench -n [number of threads]
+
+The argument for the number of threads to test with is not optional.  There is no upper bound, but large numbers may cause issues.
+
+The output is formatted as follows:
+[number of threads] [GIOPS] [GFLOPS]
+
+Example:
+./cpu_bench -n 2
+2	3.070310	1.283970
+
+Running Memory Benchmark:
+The comand to run the memory benchmark is:
+./mem_bench [block size] [type of access] [number of threads]
+
+None of the arguments are optional.  The block size must be specified as either B, KB, or MB.  The type of access is either sequential or random, specified with an S or R respectively.  The number of threads does, again, not have an upper bound, but large numbers will begin to push the memory usage into swap space, and, in tuen, give imcorrect results.
+
+The output is formatted as follows:
+[number of threads] [size] [type of access] [throughput (MB/sec)] [latency (ms/operation)]
+
+Example:
+./mem_bench KB S 2
+2	KB	S	6616.272211	0.000148
+
+Running Disk Benchmark:
+The command to run the disk benchmark is:
+./disk_bench [block size] [number of threads]
+
+Both arguments are required.  This benchmark must be run as root to obtain correct results.  This is due to the need to clear the disk cache between reads and writes, an operation that is restricted to super users.  The block size must be either B, KB, MB, or GB.  Again, using large threads is risky, especially with larger block sizes, as the files generated during the test can be quite large.
+
+The output format is:
+[number of threads] [block size] [sequential write throughput] [sequential write latency] [sequential read throughput] [sequential read latency] [random write throughput] [random write latency] [random read throughput] [random read latency]
+
+All throughput is in MB/sec, and all latency is in ms/byte.
+
+Example:
+sudo ./disk_bench KB 1
+1	KB	72.649541	0.000013	57.182722	0.000017	22.763860	0.000042	1.496021	0.000637
+
+Running GPU Benchmark:
+The command for running GPU benchmarks is:
+./gpu_bench -n [number of threads] -t [type of test]
+
+Since GPUs are massivly concurrent, the number of threads will often be a multiple of 1024.  However, it can be any number.  The type of test is either 'I' or 'F' for integer or loating point operations, respectively.
+
+The output from this test is labelled.
+
+Example:
+./gpu_bench -n 1024 -t F
+Time taken: 2.201933
+1412.235123 GFLOPS

@@ -1,0 +1,30 @@
+\documentclass{article}
+\usepackage{fullpage}
+
+\title{CS451 Project 1 \\ Manual}
+\author{Adrian Birylo \\ Daniel Hitchings}
+
+\begin{document}
+
+\maketitle
+\bigskip 
+
+\subsection{CPU Benchmarking Program}
+Usage: ./cpu\_bench -n [number of threads] -l [number of loops]
+
+\subsection{GPU Benchmarking Program}
+Usage: ./gpu\_bench -l [number of loops] -t [type of operation (I, F)]\\
+Usage: ./gpu\_mem\_bench -r [(R)ead or (W)rite] -t [size type (B, KB, MB)]
+\subsection{Memory Benchmarking Program}
+Usage: ./mem\_bench [size (B, KB, MB)] [(S)equential or (R)andom] [number of threads]
+
+\subsection{Disk Benchmarking Program}
+Usage: ./disk\_bench [size (B, KB, MB, GB)]
+
+\subsection{Network Benchmarking Program}
+For the networking bench the server needs to be running before the client and need to have the same amount of threads and protocol set as the client \\
+Usage: ./net\_server\_bench -n [number of threads] -m [(U)DP or (T)CP]\\
+Usage: ./net\_client\_bench -n [number of threads] -m [(U)DP or (T)CP] -l [number of loops] -t [size of packet (B, K, 6)]
+
+
+\end{document}

@@ -1,0 +1,91 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage{graphicx}
+\usepackage{float}	  %to make figures not float
+\restylefloat{figure} %to make figures not float
+
+\title{CS451 Project 1 \\ Manual}
+\author{Adrian Birylo \\ Daniel Hitchings}
+
+\begin{document}
+
+\maketitle
+\bigskip 
+
+\subsection{CPU Benchmarking Program}
+\begin{figure}[!h]
+\center{
+\includegraphics[width=\textwidth]{cpu_bench.png}
+\caption{CPU Benchmark}
+}
+\end{figure}
+
+\pagebreak
+\subsection{GPU Benchmarking Program}
+\begin{figure}[!h]
+\center{
+\begin{tabular}{|c|c|}
+\hline
+GIOPS & GFLOPS \\
+\hline
+1192.321 & 1351.923 \\
+\hline
+\end{tabular}
+\caption{GPU GIOPS and GFLOPS Benchmark}
+}
+\end{figure}
+
+\begin{figure}[!h]
+\center{
+\includegraphics[width=\textwidth]{gpu_mem_bench.png}
+\caption{GPU Memory Benchmark}
+}
+\end{figure}
+
+
+\pagebreak
+\subsection{Memory Benchmarking Program}
+\begin{figure}[!h]
+\center{
+\includegraphics[width=.7\textwidth]{mem_throughput.png}
+\caption{Memory Throughput Benchmark}
+}
+\end{figure}
+\begin{figure}[!h]
+\center{
+\includegraphics[width=.7\textwidth]{mem_latency.png}
+\caption{Memory Latency Benchmark}
+}
+\end{figure}
+
+\pagebreak
+\subsection{Disk Benchmarking Program}
+\begin{figure}[!h]
+\center{
+\includegraphics[width=.7\textwidth]{disk_throughput.png}
+\caption{Disk Throughput Benchmark}
+}
+\end{figure}
+\begin{figure}[!h]
+\center{
+\includegraphics[width=.7\textwidth]{disk_latency.png}
+\caption{Disk Latency Benchmark}
+}
+\end{figure}
+
+\pagebreak
+\subsection{Network Benchmarking Program}
+\begin{figure}[!h]
+\center{
+\includegraphics[width=.7\textwidth]{network_udp_throughput.png}
+\caption{Network UDP Throughput Benchmark}
+}
+\end{figure}
+\begin{figure}[!h]
+\center{
+\includegraphics[width=.7\textwidth]{network_udp_latency.png}
+\caption{Network UDP Latency Benchmark}
+}
+\end{figure}
+
+\end{document}

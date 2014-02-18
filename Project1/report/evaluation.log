@@ -1,0 +1,227 @@
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.2.4)  5 FEB 2014 22:30
+entering extended mode
+**evaluation.tex
+(C:\Users\Dann\Documents\GitHub\cs451\Project1\report\evaluation.tex
+LaTeX2e <2011/06/27>
+Babel <v3.8m> and hyphenation patterns for english, afrikaans, ancientgreek, ar
+abic, armenian, assamese, basque, bengali, bokmal, bulgarian, catalan, coptic, 
+croatian, czech, danish, dutch, esperanto, estonian, farsi, finnish, french, ga
+lician, german, german-x-2013-05-26, greek, gujarati, hindi, hungarian, iceland
+ic, indonesian, interlingua, irish, italian, kannada, kurmanji, latin, latvian,
+ lithuanian, malayalam, marathi, mongolian, mongolianlmc, monogreek, ngerman, n
+german-x-2013-05-26, nynorsk, oriya, panjabi, pinyin, polish, portuguese, roman
+ian, russian, sanskrit, serbian, slovak, slovenian, spanish, swedish, swissgerm
+an, tamil, telugu, turkish, turkmen, ukenglish, ukrainian, uppersorbian, usengl
+ishmax, welsh, loaded.
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\article.cls"
+Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\size10.clo"
+File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\preprint\fullpage.sty"
+Package: fullpage 1999/02/23 1.1 (PWD)
+\FP@margin=\skip43
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\graphicx.sty"
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\keyval.sty"
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks14
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\graphics.sty"
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\trig.sty"
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\00miktex\graphics.cfg"
+File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
+)
+Package graphics Info: Driver file: pdftex.def on input line 91.
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\pdftex-def\pdftex.def"
+File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\infwarerr.sty"
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\ltxcmds.sty"
+Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
+)
+\Gread@gobject=\count87
+))
+\Gin@req@height=\dimen103
+\Gin@req@width=\dimen104
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\subfigure\subfigure.sty"
+Package: subfigure 2002/07/30 v2.1.4 subfigure package
+\subfigtopskip=\skip44
+\subfigcapskip=\skip45
+\subfigcaptopadj=\dimen105
+\subfigbottomskip=\skip46
+\subfigcapmargin=\dimen106
+\subfiglabelskip=\skip47
+\c@subfigure=\count88
+\c@lofdepth=\count89
+\c@subtable=\count90
+\c@lotdepth=\count91
+
+****************************************
+* Local config file subfigure.cfg used *
+****************************************
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\subfigure\subfigure.cfg")
+\subfig@top=\skip48
+\subfig@bottom=\skip49
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\tools\indentfirst.sty"
+Package: indentfirst 1995/11/23 v1.03 Indent first paragraph (DPC)
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\float\float.sty"
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count92
+\float@exts=\toks15
+\float@box=\box26
+\@float@everytoks=\toks16
+\@floatcapt=\box27
+)
+\@float@every@figure=\toks17
+
+(C:\Users\Dann\Documents\GitHub\cs451\Project1\report\evaluation.aux)
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 12.
+LaTeX Font Info:    ... okay on input line 12.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 12.
+LaTeX Font Info:    ... okay on input line 12.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 12.
+LaTeX Font Info:    ... okay on input line 12.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 12.
+LaTeX Font Info:    ... okay on input line 12.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 12.
+LaTeX Font Info:    ... okay on input line 12.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 12.
+LaTeX Font Info:    ... okay on input line 12.
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count93
+\scratchdimen=\dimen107
+\scratchbox=\box28
+\nofMPsegments=\count94
+\nofMParguments=\count95
+\everyMPshowfont=\toks18
+\MPscratchCnt=\count96
+\MPscratchDim=\dimen108
+\MPnumerator=\count97
+\makeMPintoPDFobject=\count98
+\everyMPtoPDFconversion=\toks19
+)
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 15.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 15.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 15.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 29.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 29.
+ [1
+
+{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}]
+<cpu_bench.png, id=9, 480.29437pt x 289.08pt>
+File: cpu_bench.png Graphic file (type png)
+ <use cpu_bench.png>
+Package pdftex.def Info: cpu_bench.png used on input line 71.
+(pdftex.def)             Requested size: 328.82707pt x 197.91714pt.
+ [2 <C:/Users/Dann/Documents/GitHub/cs451/Project1/report/cpu_bench.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 92--93
+
+ []
+
+<gpu_mem_bench.png, id=13, 451.6875pt x 271.76532pt>
+File: gpu_mem_bench.png Graphic file (type png)
+ <use gpu_mem_bench.png>
+Package pdftex.def Info: gpu_mem_bench.png used on input line 96.
+(pdftex.def)             Requested size: 469.75502pt x 282.65413pt.
+
+<mem_throughput.png, id=14, 510.40688pt x 304.88907pt>
+File: mem_throughput.png Graphic file (type png)
+
+<use mem_throughput.png>
+Package pdftex.def Info: mem_throughput.png used on input line 109.
+(pdftex.def)             Requested size: 328.82707pt x 196.43095pt.
+ [3 <C:/Users/Dann/Documents/GitHub/cs451/Project1/report/gpu_mem_bench.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 114--115
+
+ []
+
+<mem_latency.png, id=18, 510.40688pt x 304.88907pt>
+File: mem_latency.png Graphic file (type png)
+ <use mem_latency.png>
+Package pdftex.def Info: mem_latency.png used on input line 118.
+(pdftex.def)             Requested size: 328.82707pt x 196.43095pt.
+
+[4 <C:/Users/Dann/Documents/GitHub/cs451/Project1/report/mem_throughput.png> <C
+:/Users/Dann/Documents/GitHub/cs451/Project1/report/mem_latency.png>]
+<disk_throughput.png, id=22, 487.06969pt x 292.09125pt>
+File: disk_throughput.png Graphic file (type png)
+
+<use disk_throughput.png>
+Package pdftex.def Info: disk_throughput.png used on input line 131.
+(pdftex.def)             Requested size: 328.82707pt x 197.19318pt.
+ <disk_latency.png, id=23, 485.56406pt x 292.09125pt>
+File: disk_latency.png Graphic file (type png)
+
+<use disk_latency.png>
+Package pdftex.def Info: disk_latency.png used on input line 140.
+(pdftex.def)             Requested size: 328.82707pt x 197.80379pt.
+ [5 <C:/Users/Dann/Documents/GitHub/cs451/Project1/report/disk_throughput.png>]
+ [6 <C:/Users/Dann/Documents/GitHub/cs451/Project1/report/disk_latency.png>]
+<network_udp_throughput.png, id=30, 512.66531pt x 306.39468pt>
+File: network_udp_throughput.png Graphic file (type png)
+
+<use network_udp_throughput.png>
+Package pdftex.def Info: network_udp_throughput.png used on input line 154.
+(pdftex.def)             Requested size: 328.82707pt x 196.52205pt.
+
+<network_udp_latency.png, id=31, 512.66531pt x 306.39468pt>
+File: network_udp_latency.png Graphic file (type png)
+
+<use network_udp_latency.png>
+Package pdftex.def Info: network_udp_latency.png used on input line 160.
+(pdftex.def)             Requested size: 328.82707pt x 196.52205pt.
+ [7 <C:/Users/Dann/Documents/GitHub/cs451/Project1/report/network_udp_throughpu
+t.png>] [8 <C:/Users/Dann/Documents/GitHub/cs451/Project1/report/network_udp_la
+tency.png>]
+(C:\Users\Dann\Documents\GitHub\cs451\Project1\report\evaluation.aux) ) 
+Here is how much of TeX's memory you used:
+ 1416 strings out of 493921
+ 19629 string characters out of 3144880
+ 72090 words of memory out of 3000000
+ 4726 multiletter control sequences out of 15000+200000
+ 7587 words of font info for 27 fonts, out of 3000000 for 9000
+ 841 hyphenation exceptions out of 8191
+ 27i,8n,24p,640b,259s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Prog
+ram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Progra
+m Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program F
+iles (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program File
+s (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb>
+Output written on evaluation.pdf (8 pages, 161247 bytes).
+PDF statistics:
+ 53 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 41 words of extra memory for PDF output out of 10000 (max. 10000000)
+

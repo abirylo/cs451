@@ -79,6 +79,7 @@ int getBuff(std::string* s){
 		} else {
 			while((getline(myFile,tempStr)) && (n<BUFF_SIZE)){
 				s->append(tempStr);
+				s->append(" ");
 				n++;
 			}
 		}
@@ -109,10 +110,16 @@ void t_process(){
 	}while(fileClosed != 1);
 }
 
+bool compByValue(TStrIntPair i, TStrIntPair j){
+	return ((i.second)>(j.second));
+}
+
 int main(int argc, char *argv[])
 {	
 	int numThreads = 8;
 	std::vector<std::thread> threads;
+	unsigned totalWords = 0;
+	std::vector<TStrIntPair> mapValues;
 
 	myFile.open(argv[1]);
 	if(!(myFile.good())){
@@ -129,12 +136,19 @@ int main(int argc, char *argv[])
 	}
 
 	ofstream outFile("tempCount.out", std::ofstream::out);
-	for (TStrIntMap::iterator it=wcMap.begin(); it!=wcMap.end(); ++it){
-			outFile << it->first << " => " << it->second << std::endl;
+	for(TStrIntMap::iterator it=wcMap.begin(); it!=wcMap.end(); it++){
+		mapValues.push_back(*it);
+		//outFile << it->first << " => " << it->second << std::endl;
+		totalWords += it->second;
+	}
+	std::sort(mapValues.begin(), mapValues.end(), compByValue);
+	for(std::vector<TStrIntPair>::iterator it=mapValues.begin(); it!=mapValues.end(); it++){
+		outFile << it->first << "\t" << it->second << std::endl;
 	}
 	outFile.close();
 
-	cout << "Number of file access/mapmerges: " << loopCounter << endl;
+	std::cout << "Number of file access/mapmerges: " << loopCounter << std::endl;
+	std::cout << "Total words counted: " << totalWords << std::endl;
 
 	return 0;
 }

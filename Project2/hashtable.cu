@@ -149,10 +149,13 @@ __device__ uint32_t string_hash(const char* key){
 }
 
 __device__ int string_eq(const char *a, const char *b){
-	while(*a != NULL || *b != NULL){
-    if(*a != *b) return -1;
+	while(*a != NULL && *b != NULL){
+    if(*a != *b) return 0;
+    a++;
+    b++;
   }
-  return 0;
+  if(*a==*b) return 1;
+  else return 0;
 }
 
 __device__ void get_all_kvps(hashtable_t *t, kvp_t *kvps){

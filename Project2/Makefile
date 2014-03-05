@@ -1,6 +1,6 @@
 #Wordcount Makefile for CPU and GPU
 CC=g++
-FLAGS=-std=gnu++11 -pthread -Wl,--no-as-needed
+FLAGS=-std=gnu++0x -pthread -Wl,--no-as-needed
 
 all: CPU
 

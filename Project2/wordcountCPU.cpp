@@ -94,6 +94,7 @@ void t_process(){
 	do{
 		fileMtx.lock();
 		fileClosed = getBuff(&buff);
+		//std::cout << loopCounter << std::endl;
 		loopCounter++;
 		fileMtx.unlock();
 
@@ -116,17 +117,21 @@ bool compByValue(TStrIntPair i, TStrIntPair j){
 
 int main(int argc, char *argv[])
 {	
-	int numThreads = 8;
+	int numThreads = 1;
 	std::vector<std::thread> threads;
 	unsigned totalWords = 0;
 	std::vector<TStrIntPair> mapValues;
+	int file_arg = 2;
 
-	myFile.open(argv[1]);
+	numThreads = atoi(argv[1]);
+
+	myFile.open(argv[file_arg]);
 	if(!(myFile.good())){
 		std::cout << "Error opening file." << std::endl;
 		return 1;
 	}
 	while(myFile.is_open()){
+		threads.clear();
 		for(int i=0; i<numThreads; i++){
 			threads.push_back(std::thread(t_process));
 		}

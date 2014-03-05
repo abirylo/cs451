@@ -36,7 +36,7 @@ void count(std::string s, TStrIntMap* map){
 
 	while(t = tokenize(&tok)){
 		token = std::string(t);
-		std::transform(token.begin(), token.end(), token.begin(), ::tolower); //make sure the word is lowercase
+		//std::transform(token.begin(), token.end(), token.begin(), ::tolower); //make sure the word is lowercase
 		iter = map->find(token);
 		if(iter == map->end()){
 			map->insert(TStrIntPair(token, 1));
@@ -98,7 +98,7 @@ void t_process(){
 		loopCounter++;
 		fileMtx.unlock();
 
-		if(fileClosed == 1) return;
+		//if(fileClosed == 1) return;
 
 		count(buff, &smallMap);
 	

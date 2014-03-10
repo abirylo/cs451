@@ -36,7 +36,7 @@ void count(std::string s, TStrIntMap* map){
 
 	while(t = tokenize(&tok)){
 		token = std::string(t);
-		std::transform(token.begin(), token.end(), token.begin(), ::tolower); //make sure the word is lowercase
+		//std::transform(token.begin(), token.end(), token.begin(), ::tolower); //make sure the word is lowercase
 		iter = map->find(token);
 		if(iter == map->end()){
 			map->insert(TStrIntPair(token, 1));
@@ -94,10 +94,11 @@ void t_process(){
 	do{
 		fileMtx.lock();
 		fileClosed = getBuff(&buff);
+		//std::cout << loopCounter << std::endl;
 		loopCounter++;
 		fileMtx.unlock();
 
-		if(fileClosed == 1) return;
+		//if(fileClosed == 1) return;
 
 		count(buff, &smallMap);
 	
@@ -116,17 +117,21 @@ bool compByValue(TStrIntPair i, TStrIntPair j){
 
 int main(int argc, char *argv[])
 {	
-	int numThreads = 8;
+	int numThreads = 1;
 	std::vector<std::thread> threads;
 	unsigned totalWords = 0;
 	std::vector<TStrIntPair> mapValues;
+	int file_arg = 2;
 
-	myFile.open(argv[1]);
+	numThreads = atoi(argv[1]);
+
+	myFile.open(argv[file_arg]);
 	if(!(myFile.good())){
 		std::cout << "Error opening file." << std::endl;
 		return 1;
 	}
 	while(myFile.is_open()){
+		threads.clear();
 		for(int i=0; i<numThreads; i++){
 			threads.push_back(std::thread(t_process));
 		}

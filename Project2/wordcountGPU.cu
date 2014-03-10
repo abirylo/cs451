@@ -4,7 +4,7 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <string.h>
-#include "hashtable.cuh"
+#include "hashtable_d.h"
 #include "hashtable.h"
 
 #define CHECK_ERR(x)                                    \
@@ -28,8 +28,8 @@ __global__ void wordcount(char* words, char* result, long* size_result, long siz
     if(end > words+size)
       end = words+size;
     
-    hashtable_t table;
-    ht_init_s(&table, 1024);
+    hashtable_t_d table;
+    ht_init_s_d(&table, (size_t)1024);
     
 // "?\";<>,~`!@#^&*()_+-=/\\:;{}[]|. "
     char *word_start = start;
@@ -38,12 +38,12 @@ __global__ void wordcount(char* words, char* result, long* size_result, long siz
       if(*current_pos == '?' || *current_pos == '\"' || *current_pos == ';' || *current_pos == '<' || *current_pos == '>' || *current_pos == ',' || *current_pos == '~' || *current_pos == '`' || *current_pos == '!' || *current_pos == '@' || *current_pos == '#' || *current_pos == '^' || *current_pos == '&' || *current_pos == '*' || *current_pos == '(' || *current_pos == ')' || *current_pos == '_' || *current_pos == '+' || *current_pos == '-' || *current_pos == '=' || *current_pos == '/' || *current_pos == '\\' || *current_pos == ':' || *current_pos == '{' || *current_pos == '}' || *current_pos == '[' || *current_pos == ']' || *current_pos == '|' || *current_pos == '.' || *current_pos == ' ' || *current_pos == '\n' || *current_pos == '\0'){
         *current_pos = '\0';
         int val; 
-        if((val = ht_get(&table, word_start)) != -1){
-          ht_delete(&table, word_start);
-          ht_add(&table, word_start, val+1);
+        if((val = ht_get_d(&table, word_start)) != -1){
+          ht_delete_d(&table, word_start);
+          ht_add_d(&table, word_start, val+1);
         }
         else{
-          ht_add(&table, word_start, 1);
+          ht_add_d(&table, word_start, 1);
         }
         word_start = current_pos+1;
       }
@@ -51,15 +51,20 @@ __global__ void wordcount(char* words, char* result, long* size_result, long siz
     }
        
     char *r = (MEMORY_SIZE/BLOCK_SIZE) * a + result;
-    get_all_kvps(&table, (kvp_t*)r);
+    get_all_kvps_d(&table, (kvp_t_d*)r);
     size_result[a] = table.size;
     
-    ht_dispose(&table);
+    ht_dispose_d(&table);
     //__syncthreads();
   
   }
 }
 
+int compareByVal(const void *a, const void *b){
+  if(((kvp_t*)a)->val < ((kvp_t*)b)->val) return -1;
+  if(((kvp_t*)a)->val == ((kvp_t*)b)->val) return 0;
+  if(((kvp_t*)a)->val > ((kvp_t*)b)->val) return 1; 
+}
 
 int main(int argc, char *argv[]) {
 
@@ -119,22 +124,25 @@ int main(int argc, char *argv[]) {
     err = cudaMemcpy(h_size_result, d_size_result, BLOCK_SIZE, cudaMemcpyDeviceToHost);
     CHECK_ERR(err);
     
+    
+    //*
     //need to merge
     for(int i=0; i<threads; i++){
-      for(int j=0; i<h_size_result[i]; j++){
-        kvp_t *kvps = (kvp_t*)h_result;
-        char * c = (char *)(kvps[i].key-(long)d_words)+(long)h_words;
+      kvp_t *kvps = (kvp_t*)((MEMORY_SIZE/BLOCK_SIZE) * (i) + h_result); 
+      for(int j=0; j<h_size_result[i]; j++){
+        char * c = (char *)(kvps[j].key-(long)d_words)+(long)h_words;
         int val = 0;
         if((val = ht_get(&table, c)) != -1){
-          ht_add(&table, c, val+1);
+          ht_add(&table, (void *)c, val+kvps[j].val);
         }
         else{
           char* s = (char*)malloc(strlen(c));
           strcpy(s, c);
-          ht_add(&table, s, 1);
+          ht_add(&table, s, kvps[j].val);
         }
       }
     }
+    // */
   }
 
   err = cudaFree(d_words);
@@ -147,16 +155,20 @@ int main(int argc, char *argv[]) {
   free(h_words);
   free(h_result);
   free(h_size_result);
+  
+  //*
   //print out the final hash table
+  ht_delete(&table, "\0"); //delete null value 
   kvp_t* results = (kvp_t*)malloc(sizeof(kvp_t)*table.size);
   get_all_kvps(&table, (kvp_t*)results);
-  
-  for(int i=0; i<table.size; i++){
+  qsort(results, table.size, sizeof(kvp_t), compareByVal);  
+ 
+  for(int i=table.size-1; i>=0; i--){
     printf("%s %i\n",results[i].key, results[i].val);
     free((void *)results[i].key);
   }
   
   ht_dispose(&table);
   free(results);
-
+  // */
 }

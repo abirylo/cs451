@@ -120,16 +120,17 @@ int main(int argc, char *argv[]) {
     CHECK_ERR(err);
     
     //need to merge
-    for(int i=0; i<threads, i++){
-      for(int j=0; i<h_size_result[i]; j++)
+    for(int i=0; i<threads; i++){
+      for(int j=0; i<h_size_result[i]; j++){
         kvp_t *kvps = (kvp_t*)h_result;
         char * c = (char *)(kvps[i].key-(long)d_words)+(long)h_words;
+        int val = 0;
         if((val = ht_get(&table, c)) != -1){
-          ht_add(&table, word_start, val+1);
+          ht_add(&table, c, val+1);
         }
         else{
-          char* s = malloc(strlen(word_start);
-          strcpy(s, word_start);
+          char* s = (char*)malloc(strlen(c));
+          strcpy(s, c);
           ht_add(&table, s, 1);
         }
       }
@@ -147,15 +148,15 @@ int main(int argc, char *argv[]) {
   free(h_result);
   free(h_size_result);
   //print out the final hash table
-  kvp_t* results = malloc(sizeof(kvp_t)*table.size);
-  get_all_kvps(&table, (kvp_t*)r);
+  kvp_t* results = (kvp_t*)malloc(sizeof(kvp_t)*table.size);
+  get_all_kvps(&table, (kvp_t*)results);
   
   for(int i=0; i<table.size; i++){
-    print("%s %i\n",r[i].key, r[i].val);
-    free(r[i].key);
+    printf("%s %i\n",results[i].key, results[i].val);
+    free((void *)results[i].key);
   }
   
   ht_dispose(&table);
-  free(r);
+  free(results);
 
 }

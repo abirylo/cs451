@@ -15,7 +15,7 @@
 #define MEMORY_SIZE 268435456 //256Megabytes  
 #define BLOCK_SIZE 128
   
-__global__ void wordcount(char* words, char* result, long size, int n) {
+__global__ void wordcount(char* words, char* result, long* size_result, long size, int n) {
 
   int a = blockDim.x * blockIdx.x + threadIdx.x;
   
@@ -50,6 +50,7 @@ __global__ void wordcount(char* words, char* result, long size, int n) {
     
     char *r = (MEMORY_SIZE/BLOCK_SIZE) * a + result;
     get_all_kvps(&table, (kvp_t*)r);
+    size_result[a] = table.size;
     //__syncthreads();
   
   }
@@ -64,6 +65,8 @@ int main(int argc, char *argv[]) {
   char* d_words;
   char* h_result;
   char* d_result;
+  long* h_size_result;
+  long* d_size_result;
   //char** h_dout;
   //char** d_dout;
   char* file_name = argv[1];
@@ -87,23 +90,33 @@ int main(int argc, char *argv[]) {
   h_result = (char*)malloc(sizeof(char)*MEMORY_SIZE);
   err = cudaMalloc((void **) &d_result, sizeof(char)*MEMORY_SIZE);
   CHECK_ERR(err);
-  
+
+  h_size_result = (long *)malloc(sizeof(long)*BLOCK_SIZE);
+  err = cudaMalloc((void **) &d_size_result, sizeof(long)*BLOCK_SIZE);
+  CHECK_ERR(err);
+
   while(pos < file_size){
     long read_size = read(file->_fileno, h_words, MEMORY_SIZE);
     pos += read_size;
     
     err = cudaMemcpy(d_words, h_words, read_size, cudaMemcpyHostToDevice);
     CHECK_ERR(err);
-    
-    wordcount<<< 1, BLOCK_SIZE >>>(d_words,d_result, read_size,(int)ceil((double)(read_size * BLOCK_SIZE)/(double)MEMORY_SIZE)); 
+   
+    int threads = (int)ceil((double)(read_size*BLOCK_SIZE)/(double)MEMORY_SIZE); 
+    wordcount<<< 1, BLOCK_SIZE >>>(d_words,d_result,d_size_result,read_size,threads); 
     
     err = cudaMemcpy(h_words, d_words, read_size, cudaMemcpyDeviceToHost);
     CHECK_ERR(err);
-    err = cudaMemcpy(h_result, d_result, MEMORY_SIZE, cudaMemcpyDeviceToHost);
+    err = cudaMemcpy(h_result, d_result, threads*MEMORY_SIZE/BLOCK_SIZE, cudaMemcpyDeviceToHost);
     CHECK_ERR(err);
+    err = cudaMemcpy(h_size_result, d_size_result, BLOCK_SIZE, cudaMemcpyDeviceToHost);
+    CHECK_ERR(err);
+
     kvp_t *kvps = (kvp_t*)h_result; 
-    char * c = (char *)(kvps[0].key-(long)d_words)+(long)h_words;
-    printf("%s, %i", c, kvps[0].val);
+    for(int i = 0; i < h_size_result[0]; i++){
+      char * c = (char *)(kvps[i].key-(long)d_words)+(long)h_words;
+      printf("%s, %i\n", c, kvps[i].val);
+    }
   }
 
 

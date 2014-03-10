@@ -3,7 +3,9 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+#include <string.h>
 #include "hashtable.cuh"
+#include "hashtable.h"
 
 #define CHECK_ERR(x)                                    \
   if (x != cudaSuccess) {                               \
@@ -47,10 +49,12 @@ __global__ void wordcount(char* words, char* result, long* size_result, long siz
       }
       current_pos++;
     }
-    
+       
     char *r = (MEMORY_SIZE/BLOCK_SIZE) * a + result;
     get_all_kvps(&table, (kvp_t*)r);
     size_result[a] = table.size;
+    
+    ht_dispose(&table);
     //__syncthreads();
   
   }
@@ -82,7 +86,10 @@ int main(int argc, char *argv[]) {
   file = fopen(file_name, "r");
   if(file == NULL)
     return -1;
-
+  
+  hashtable_t table;
+  ht_init_s(&table, 1024*1024);
+  
   h_words = (char*)malloc(sizeof(char)*(MEMORY_SIZE>file_size ? file_size : MEMORY_SIZE)); 
   err = cudaMalloc((void **) &d_words, sizeof(char)*MEMORY_SIZE);
   CHECK_ERR(err);
@@ -111,14 +118,44 @@ int main(int argc, char *argv[]) {
     CHECK_ERR(err);
     err = cudaMemcpy(h_size_result, d_size_result, BLOCK_SIZE, cudaMemcpyDeviceToHost);
     CHECK_ERR(err);
-
-    kvp_t *kvps = (kvp_t*)h_result; 
-    for(int i = 0; i < h_size_result[0]; i++){
-      char * c = (char *)(kvps[i].key-(long)d_words)+(long)h_words;
-      printf("%s, %i\n", c, kvps[i].val);
+    
+    //need to merge
+    for(int i=0; i<threads, i++){
+      for(int j=0; i<h_size_result[i]; j++)
+        kvp_t *kvps = (kvp_t*)h_result;
+        char * c = (char *)(kvps[i].key-(long)d_words)+(long)h_words;
+        if((val = ht_get(&table, c)) != -1){
+          ht_add(&table, word_start, val+1);
+        }
+        else{
+          char* s = malloc(strlen(word_start);
+          strcpy(s, word_start);
+          ht_add(&table, s, 1);
+        }
+      }
     }
   }
 
-
+  err = cudaFree(d_words);
+  CHECK_ERR(err);
+  err = cudaFree(d_result);
+  CHECK_ERR(err);
+  err = cudaFree(d_size_result);
+  CHECK_ERR(err);
+  
+  free(h_words);
+  free(h_result);
+  free(h_size_result);
+  //print out the final hash table
+  kvp_t* results = malloc(sizeof(kvp_t)*table.size);
+  get_all_kvps(&table, (kvp_t*)r);
+  
+  for(int i=0; i<table.size; i++){
+    print("%s %i\n",r[i].key, r[i].val);
+    free(r[i].key);
+  }
+  
+  ht_dispose(&table);
+  free(r);
 
 }

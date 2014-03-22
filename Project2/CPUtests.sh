@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FILE="test_data/med-data"
+FILE="/home/tli13/shared/synthetic_12GB"
 LOGFILE="CPUCountTest.log"
 
 touch $LOGFILE

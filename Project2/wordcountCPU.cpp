@@ -1,6 +1,6 @@
 //wordcountCPU.c
 
-#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <cstring>
 #include <string>
@@ -15,7 +15,7 @@
 
 using namespace std;
 
-typedef std::map<std::string, int> TStrIntMap;
+typedef std::unordered_map<std::string, int> TStrIntMap;
 typedef std::pair<std::string, int> TStrIntPair;
 
 //Hooray Global Variables!

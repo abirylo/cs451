@@ -36,18 +36,15 @@ void count(std::string s, TStrIntMap* map){
 
 	while(t = tokenize(&tok)){
 		token = std::string(t);
-		//std::transform(token.begin(), token.end(), token.begin(), ::tolower); //make sure the word is lowercase
 		iter = map->find(token);
 		if(iter == map->end()){
 			map->insert(TStrIntPair(token, 1));
-			// std::cout << "Inserting token: " << token << " for the first time." << std::endl;
 		}
 		else{
 			value = (*map)[token];
 			value++;
 			map->erase(iter);
 			map->insert(TStrIntPair(token, value));
-			// std::cout << "Updating token: " << token << " to have a value of: " << value << std::endl;
 		}
 	}
 }
@@ -94,11 +91,8 @@ void t_process(){
 	do{
 		fileMtx.lock();
 		fileClosed = getBuff(&buff);
-		//std::cout << loopCounter << std::endl;
 		loopCounter++;
 		fileMtx.unlock();
-
-		//if(fileClosed == 1) return;
 
 		count(buff, &smallMap);
 	
@@ -112,7 +106,7 @@ void t_process(){
 }
 
 bool compByValue(TStrIntPair i, TStrIntPair j){
-	return ((i.second)>(j.second));
+       return ((i.second)>(j.second));
 }
 
 int main(int argc, char *argv[])

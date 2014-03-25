@@ -1,0 +1,60 @@
+192 Threads
+Starting main.
+Elements = 65536
+File Opened.
+Calling GPU func with: 192 threads, and a buffer of size 760000 (380000 keys)
+END VERIFY TABLE
+
+real	0m0.508s
+user	0m0.008s
+sys	0m0.413s
+================================================
+
+384 Threads
+Starting main.
+Elements = 65536
+File Opened.
+Calling GPU func with: 384 threads, and a buffer of size 760000 (380000 keys)
+END VERIFY TABLE
+
+real	0m0.499s
+user	0m0.007s
+sys	0m0.418s
+================================================
+
+768 Threads
+Starting main.
+Elements = 65536
+File Opened.
+Calling GPU func with: 768 threads, and a buffer of size 760000 (380000 keys)
+END VERIFY TABLE
+
+real	0m0.497s
+user	0m0.007s
+sys	0m0.418s
+================================================
+
+1536 Threads
+Starting main.
+Elements = 65536
+File Opened.
+Calling GPU func with: 1536 threads, and a buffer of size 760000 (380000 keys)
+END VERIFY TABLE
+
+real	0m0.498s
+user	0m0.004s
+sys	0m0.422s
+================================================
+
+3072 Threads
+Starting main.
+Elements = 65536
+File Opened.
+Calling GPU func with: 3072 threads, and a buffer of size 760000 (380000 keys)
+END VERIFY TABLE
+
+real	0m0.497s
+user	0m0.005s
+sys	0m0.420s
+================================================
+

@@ -19,29 +19,29 @@
 
 #define ELEMENTS 65536			//Default 65536 for your dataset
 //#define SIZE ELEMENTS*sizeof(unsigned int)
-#define FILE_BUFF 1024*1024*10	//copy 1MB of the file at a time
+#define FILE_BUFF 1024*1024*10	//copy 10MB of the file at a time
 
 __host__ __device__ void iterate(unsigned int* table);
 __host__ __device__ unsigned int get(unsigned int* table, unsigned short key);
 
 __device__ void put(unsigned int* table, unsigned short key){
-        atomicAdd(&table[key], 1);
+        atomicAdd(&table[(int)key], 1);
 }
 
 __host__ __device__ unsigned int get(unsigned int* table, unsigned short key){
-  	unsigned int ret = table[key];//(unsigned long)location2->value;
+  	unsigned int ret = table[(int)key];//(unsigned long)location2->value;
   	return ret;
 }
 
-__global__ void add_to_table( unsigned short *keys, unsigned int* table ) {
+__global__ void add_to_table( unsigned short *keys, unsigned int* table, int num_keys ) {
   	// get the thread id
   	int tid = threadIdx.x + blockIdx.x * blockDim.x;
-  	int stride = blockDim.x * gridDim.x;// total num of threads.
+  	int stride = blockDim.x * gridDim.x; // total num of threads.
 
-  	while (tid < ELEMENTS) {//stripe
+  	while (tid < num_keys) {//stripe
 		unsigned short key = keys[tid];
-		printf("add_to_table: key = %u, tid = %d, table[tid] = %u\n", key, tid, table[tid]);
-    		put(table, key);
+		//printf("add_to_table: key = %u, tid = %d, table[tid] = %u\n", key, tid, table[tid]);
+    		if(key != 0) put(table, key);
     		tid += stride;
   }
 	__syncthreads();
@@ -65,10 +65,18 @@ __host__ __device__ void iterate(unsigned int* table){
   	}
 }
 
+void test_buffer(unsigned short* buffer, size_t buffer_size){
+	unsigned short value;
+	for(int i=0; i<buffer_size/2; i++){
+		value = buffer[i];
+		printf("value = %u\n", value);
+	}
+}
+
 int main(int argc, char *argv[]) {
   	printf("Starting main.\n");
   	printf("Elements = %u\n", ELEMENTS);
-	int numThreads = atoi(argv[1])/32;
+	int numThreads = atoi(argv[1]);
 	size_t size_read;
 
   	unsigned short *dev_buff;
@@ -83,21 +91,29 @@ int main(int argc, char *argv[]) {
 
 	unsigned short *buffer = (unsigned short*)calloc(1, FILE_BUFF);
 
-  // allocate memory on the device for keys and copy to device
+  // allocate memory on the device for keys
 	HANDLE_ERROR( cudaMalloc( (void**)&dev_buff, FILE_BUFF ) );
 
   // Initialize table on device
 	HANDLE_ERROR( cudaMalloc( (void**)&dev_table, ELEMENTS * sizeof(unsigned int) ) );
 	HANDLE_ERROR( cudaMemset( dev_table, 0, ELEMENTS * sizeof(unsigned int) ) );
 
-  	printf("Calling GPU func\n");
-	while(!feof(fd)){
-		size_read = fread(buffer, 1, FILE_BUFF, fd);
-  		HANDLE_ERROR( cudaMemcpy( dev_buff, buffer, size_read, cudaMemcpyHostToDevice ) );
-  		add_to_table<<<1,numThreads>>>( dev_buff, dev_table);
-  	}
+  	printf("Calling GPU func with: ");
+	size_read = fread(buffer, 1, FILE_BUFF, fd);
+	int num_keys = size_read/2; //2 bytes per each key
+	printf("%d threads, and a buffer of size %u (%d keys)\n", numThreads, size_read, num_keys);
 
-	cudaDeviceSynchronize();
+	while(size_read != 0)
+	{
+		printf("Attempting to copy %u bytes to the GPU.", size_read);
+  		HANDLE_ERROR( cudaMemcpy( dev_buff, buffer, size_read, cudaMemcpyHostToDevice ) );  //copy chunk of data to device
+  		add_to_table<<<1,numThreads>>>( dev_buff, dev_table, num_keys );
+		cudaDeviceSynchronize();
+		size_read = fread(buffer, 1, FILE_BUFF, fd);
+  		num_keys = size_read/2;
+	}
+
+	//cudaDeviceSynchronize();
 
   	verify_table( dev_table );
 

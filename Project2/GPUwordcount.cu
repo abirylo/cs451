@@ -13,33 +13,34 @@
  * 
  */
 
-
+#include <stdio.h>
+#include <stdlib.h>
 #include "book.h"
 
-//#define LIMIT 64//default: 65536
-#define ELEMENTS 64//Default 65536 for your dataset
-#define SIZE ELEMENTS*sizeof(unsigned int)
+#define ELEMENTS 65536			//Default 65536 for your dataset
+//#define SIZE ELEMENTS*sizeof(unsigned int)
+#define FILE_BUFF 1024*1024*10	//copy 1MB of the file at a time
 
 __host__ __device__ void iterate(unsigned int* table);
-__host__ __device__ unsigned int get(unsigned int* table, unsigned int key);
+__host__ __device__ unsigned int get(unsigned int* table, unsigned short key);
 
-__device__ void put(unsigned int* table, unsigned int key){
+__device__ void put(unsigned int* table, unsigned short key){
         atomicAdd(&table[key], 1);
 }
 
-__host__ __device__ unsigned int get(unsigned int* table, unsigned int key){
+__host__ __device__ unsigned int get(unsigned int* table, unsigned short key){
   	unsigned int ret = table[key];//(unsigned long)location2->value;
   	return ret;
 }
 
-__global__ void add_to_table( unsigned int *keys, unsigned int* table ) {
+__global__ void add_to_table( unsigned short *keys, unsigned int* table ) {
   	// get the thread id
   	int tid = threadIdx.x + blockIdx.x * blockDim.x;
   	int stride = blockDim.x * gridDim.x;// total num of threads.
 
   	while (tid < ELEMENTS) {//stripe
-		unsigned int key = keys[tid]; 
-		//printf("add_to_table: key = %u, tid = %d, table[tid] = %u\n", key, tid, table[tid]);
+		unsigned short key = keys[tid];
+		printf("add_to_table: key = %u, tid = %d, table[tid] = %u\n", key, tid, table[tid]);
     		put(table, key);
     		tid += stride;
   }
@@ -50,13 +51,13 @@ __global__ void add_to_table( unsigned int *keys, unsigned int* table ) {
 void verify_table( const unsigned int* dev_table ) {
 	unsigned int* host_table;
 	host_table = (unsigned int*)calloc(ELEMENTS, sizeof(unsigned int));
-	HANDLE_ERROR( cudaMemcpy( host_table, dev_table, ELEMENTS * sizeof( unsigned int ), cudaMemcpyDeviceToHost ) );
+	HANDLE_ERROR( cudaMemcpy( host_table, dev_table, ELEMENTS*sizeof(unsigned int), cudaMemcpyDeviceToHost ) );
   	iterate(host_table);
   	printf("END VERIFY TABLE\n");
 }
 
 __host__ __device__ void iterate(unsigned int* table){
-  	for(int i=0; i<ELEMENTS; i++){
+  	for(int i=1; i<ELEMENTS; i++){
     		printf("[%d]: {", i);
 		unsigned key = i;
 		printf("key = %u ",key);
@@ -64,35 +65,43 @@ __host__ __device__ void iterate(unsigned int* table){
   	}
 }
 
-int main( void ) {
+int main(int argc, char *argv[]) {
   	printf("Starting main.\n");
   	printf("Elements = %u\n", ELEMENTS);
+	int numThreads = atoi(argv[1])/32;
+	size_t size_read;
 
-  	unsigned int *dev_keys;
+  	unsigned short *dev_buff;
 	unsigned int *dev_table;
 
-	unsigned int *buffer = (unsigned int*)calloc(1, SIZE);
-	for (int i=0; i<ELEMENTS;i++){
-                buffer[i]= ELEMENTS - 1;//i;
-        }
+	FILE *fd;
+	fd = fopen(argv[2], "rb");
+	if (fd == NULL){
+		fputs ("File error",stderr);
+		exit (1);
+	}
+
+	unsigned short *buffer = (unsigned short*)calloc(1, FILE_BUFF);
 
   // allocate memory on the device for keys and copy to device
-	HANDLE_ERROR( cudaMalloc( (void**)&dev_keys, SIZE ) );
-  	HANDLE_ERROR( cudaMemcpy( dev_keys, buffer, SIZE, cudaMemcpyHostToDevice ) );
+	HANDLE_ERROR( cudaMalloc( (void**)&dev_buff, FILE_BUFF ) );
 
   // Initialize table on device
-	HANDLE_ERROR( cudaMalloc( (void**)&dev_table, ELEMENTS * sizeof(unsigned int)) );
+	HANDLE_ERROR( cudaMalloc( (void**)&dev_table, ELEMENTS * sizeof(unsigned int) ) );
 	HANDLE_ERROR( cudaMemset( dev_table, 0, ELEMENTS * sizeof(unsigned int) ) );
 
   	printf("Calling GPU func\n");
-  // this launches 60 blocks with 256 threads each, each block is scheduled on a SM without any order guarantees
+	while(!feof(fd)){
+		size_read = fread(buffer, 1, FILE_BUFF, fd);
+  		HANDLE_ERROR( cudaMemcpy( dev_buff, buffer, size_read, cudaMemcpyHostToDevice ) );
+  		add_to_table<<<1,numThreads>>>( dev_buff, dev_table);
+  	}
 
-  	add_to_table<<<60,256>>>( dev_keys, dev_table);
-  	cudaDeviceSynchronize();
+	cudaDeviceSynchronize();
 
   	verify_table( dev_table );
 
-  	HANDLE_ERROR( cudaFree( dev_keys ) );
+  	HANDLE_ERROR( cudaFree( dev_buff ) );
   	free( buffer );
   	return 0;
 }

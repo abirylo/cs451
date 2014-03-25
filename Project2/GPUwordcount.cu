@@ -19,7 +19,7 @@
 
 #define ELEMENTS 65536			//Default 65536 for your dataset
 //#define SIZE ELEMENTS*sizeof(unsigned int)
-#define FILE_BUFF 1024*1024*10	//copy 10MB of the file at a time
+#define FILE_BUFF 1024*1024*50	//copy 50MB of the file at a time
 
 __host__ __device__ void iterate(unsigned int* table);
 __host__ __device__ unsigned int get(unsigned int* table, unsigned short key);
@@ -47,22 +47,15 @@ __global__ void add_to_table( unsigned short *keys, unsigned int* table, int num
 	__syncthreads();
 }
 
-// copy table back to host, verify elements are there
-void verify_table( const unsigned int* dev_table ) {
-	unsigned int* host_table;
-	host_table = (unsigned int*)calloc(ELEMENTS, sizeof(unsigned int));
-	HANDLE_ERROR( cudaMemcpy( host_table, dev_table, ELEMENTS*sizeof(unsigned int), cudaMemcpyDeviceToHost ) );
-  	iterate(host_table);
-  	printf("END VERIFY TABLE\n");
-}
+void output_table(unsigned int* table){
+  	FILE *outFile;
+	outFile = fopen("GPUoutput.log", "w");
 
-__host__ __device__ void iterate(unsigned int* table){
-  	for(int i=1; i<ELEMENTS; i++){
-    		printf("[%d]: {", i);
-		unsigned key = i;
-		printf("key = %u ",key);
-		printf("value = %u}\n",table[key]);
+	for(int i=1; i<ELEMENTS; i++){
+		fprintf(outFile, "key = %d ",i);
+		fprintf(outFile, "value = %u}\n",table[i]);
   	}
+	fclose(outFile);
 }
 
 void test_buffer(unsigned short* buffer, size_t buffer_size){
@@ -76,7 +69,7 @@ void test_buffer(unsigned short* buffer, size_t buffer_size){
 int main(int argc, char *argv[]) {
   	printf("Starting main.\n");
   	printf("Elements = %u\n", ELEMENTS);
-	int numThreads = atoi(argv[1]);
+	int numThreads = atoi(argv[1])/32;
 	size_t size_read;
 
   	unsigned short *dev_buff;
@@ -88,6 +81,8 @@ int main(int argc, char *argv[]) {
 		fputs ("File error",stderr);
 		exit (1);
 	}
+
+	printf("File Opened.\n");
 
 	unsigned short *buffer = (unsigned short*)calloc(1, FILE_BUFF);
 
@@ -105,19 +100,23 @@ int main(int argc, char *argv[]) {
 
 	while(size_read != 0)
 	{
-		printf("Attempting to copy %u bytes to the GPU.", size_read);
+		//printf("Attempting to copy %u bytes to the GPU.", size_read);
   		HANDLE_ERROR( cudaMemcpy( dev_buff, buffer, size_read, cudaMemcpyHostToDevice ) );  //copy chunk of data to device
-  		add_to_table<<<1,numThreads>>>( dev_buff, dev_table, num_keys );
+  		add_to_table<<<32,numThreads>>>( dev_buff, dev_table, num_keys );
 		cudaDeviceSynchronize();
 		size_read = fread(buffer, 1, FILE_BUFF, fd);
   		num_keys = size_read/2;
 	}
+	fclose(fd);
 
-	//cudaDeviceSynchronize();
+  	unsigned int *table = (unsigned int*)calloc(ELEMENTS, sizeof(unsigned int));
+	HANDLE_ERROR( cudaMemcpy( table, dev_table, ELEMENTS * sizeof(unsigned int), cudaMemcpyDeviceToHost));
 
-  	verify_table( dev_table );
+	output_table(table);
 
+	HANDLE_ERROR( cudaFree( dev_table ) );
   	HANDLE_ERROR( cudaFree( dev_buff ) );
+	free(table);
   	free( buffer );
   	return 0;
 }

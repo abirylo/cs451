@@ -4,7 +4,7 @@ FLAGS=-std=gnu++0x -pthread -Wl,--no-as-needed
 
 all: CPU GPU
 
-CPU: wordcountCPU.cpp c_tokenizer.c
+CPU: CPUwordcount.cpp
 	$(CC) $(FLAGS) CPUwordcount.cpp -o wordcountCPU
 
 GPU: GPUwordcount.cu book.h

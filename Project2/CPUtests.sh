@@ -1,10 +1,22 @@
 #!/bin/bash
 
-FILE="/home/tli13/shared/synthetic_12GB"
-LOGFILE="CPUCountTest.log"
-BINFILE="2mdata.bin"
+SMALLLOG="CPUCountTest2m.log"
+SMALLFILE="2mdata.bin"
+BIGLOG="CPUCountTest10g.log"
+BIGFILE="10gdata.bin"
 
-touch $LOGFILE
+if [ "$1" == "big" ]
+then
+	LOGFILE=$BIGLOG
+	BINFILE=$BIGFILE
+elif [ "$1" == "small" ]
+then
+	LOGFILE=$SMALLLOG
+	BINFILE=$SMALLFILE
+else
+	echo Wrong arguments.
+	exit
+fi
 
 for NUM_THREADS in 1 2 4 8 16 32
 do

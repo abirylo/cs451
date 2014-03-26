@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <mutex>
 #include <thread>
+#include <algorithm>
 #include <vector>
 
 #define ELEMENTS 65535
@@ -13,6 +14,8 @@ unsigned short* keys;
 int num_keys;
 int numThreads;
 int keys_per_thread;
+
+typedef std::pair<int, int> TKeyValPair;
 
 void put(int key){
 	locks[key].lock();
@@ -48,6 +51,31 @@ void output_table(){
 	fclose(outFile);
 }
 
+bool comp(TKeyValPair i, TKeyValPair j){
+	return ((i.second)>(j.second));
+}
+
+void sorted_output(){
+	std::vector<TKeyValPair> values;
+	TKeyValPair temp;
+	long totalWords = 0;
+	for(int i=0; i<ELEMENTS; i++){
+		temp.first = i;
+		temp.second = table[i];
+		totalWords += temp.second;
+		values.push_back(temp);
+	}
+	std::sort(values.begin(), values.end(), comp);
+	FILE *ofd;
+	ofd = fopen("Top50.out", "w");
+	fprintf(ofd, "Total Words: %ld\n\n", totalWords);
+	for(int i=0; i<50; i++){
+		temp = values.at(i);
+		fprintf(ofd, "%d\t%d\n", temp.first, temp.second);
+	}
+	fclose(ofd);
+}
+
 int main(int argc, char* argv[]){
 	numThreads = atoi(argv[1]);
 	size_t size_read;
@@ -80,6 +108,8 @@ int main(int argc, char* argv[]){
 	}
 
 	output_table();
+
+//	sorted_output(); Uncomment to get top 50 occurances
 
 	free(keys);
 	fclose(fd);

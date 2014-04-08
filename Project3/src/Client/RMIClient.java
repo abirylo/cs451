@@ -90,6 +90,7 @@ public class RMIClient extends UnicastRemoteObject implements Client{
             }
             server.registry(peerId, listFiles);
         } catch (Exception e) {
+			System.out.println(e);
             System.out.println("\nError - Index Server not bound. Please start index server before launching client");
             try {
                 Naming.unbind(instanceName);

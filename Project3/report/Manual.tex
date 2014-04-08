@@ -1,0 +1,126 @@
+\documentclass{article}
+
+\usepackage{graphicx}
+\usepackage{fullpage}%better margins
+
+
+\begin{document}
+
+%title begin
+\begin{flushright}
+Adrian Birylo\\
+CS 550 Project 1\\
+Due Date: 9-16-2013\\
+\end{flushright}
+
+\begin{center}
+\textbf{\huge{Manual}}
+\end{center}
+
+
+%title end
+
+\subsection*{Preface}
+All of the code was tested in Ubuntu 13 with Java 7. \\
+All command are issued from the \texttt{Project3/src\_[centralized/decentralized]} directory. 
+
+\subsection*{Compiling}
+The command line argument to compile the server is: 
+
+\begin{verbatim}
+$ javac Server/*.java
+\end{verbatim}
+
+The command line argument to compile the client is:
+
+\begin{verbatim}
+$javac Client/*.java
+\end{verbatim}
+
+\subsection*{Running}
+
+Before the server or client can be ran rmiregistry needs to be run before hand. To run the command type \texttt{\$ rmiregistry \&} in the terminal. Once the rmiregistry is running then the server and clients can be run. The server needs to run before any of the clients can run for the centralized system. For the decentralized system any client can run in any order.\\
+
+\noindent
+The command to run the server is:
+\begin{verbatim}
+$ java Server.RMIServer -Djava.security.policy=server.policy
+\end{verbatim}
+\noindent
+The command to run the client is:
+\begin{verbatim}
+$ java Client.RMIClient (arg) -Djava.security.policy=client.policy
+\end{verbatim}
+
+The variable (arg) is where the id of the client needs to be past in. For running three client the above command would be run in three terminals with (arg) replaced with 1,2,3 respectfully. 
+
+For the decentralized system only the client is needed to run. The clients find it's neighbors by using a config file which is located in \texttt{./Config}. For each client 0-9 there is a Client\#.config file. On startup the client will look for its specific config file and then try to connect to all of its neighbors. The client will wait until it can connect to all of it's neighbors before running as a peer-to-peer program.
+
+
+\subsection*{Server} 
+When the command to run the server is typed the display in the terminal will be:
+
+\begin{verbatim}
+$ java Server.RMIServer -Djava.security.policy=server.policy
+Server is running
+To exit type 'exit'
+\end{verbatim}
+
+To exit from the server type \texttt{exit} to exit the server program. 
+
+\subsection*{Client}
+For a simple demo run three clients in three terminals using the command shown above with (args) equal to 1,2,3 respectively. When the client is ran the terminal will display:
+
+\begin{verbatim}
+$ java Client.RMIClient 1 -Djava.security.policy=client.policy
+Client running... PeerID = 1
+Options:
+1 - Search for filename
+2 - Obtain filename from peer
+3 - List files in shared directory
+4 - Exit
+>
+\end{verbatim}
+
+Once the Options are displayed a prompted is show that the user can enter 1 through 4 to do the action specified. 
+
+If Option 1 is selected then there is another prompt that asks the user for a filename. Then it searches the registry for the file and lists all of the clients that has the file. Below is a sample output. 
+
+\begin{verbatim}
+>1
+Enter filename: Text1.txt
+
+The clients that have the file Text1.txt are:
+Client 1
+Client 2
+Client 3
+\end{verbatim}
+
+If Option 2 is selected then there is another prompt that asks the user for a filename and a preferred client to download the file from. If 0 is entered then the first host will be selected. Below is a sample output.
+
+\begin{verbatim}
+>2
+Enter filename: Text1.txt
+Enter peer. If no preference enter 0.
+0
+\end{verbatim}
+
+If Option 3 is selected then all of the files in the local directory to share are listed. Below is a sample output. 
+
+\begin{verbatim}
+>3
+Files in the shared directory:
+Text1.txt
+Text4.txt
+Text7.txt
+\end{verbatim}
+
+If Option 4 is selected then the registry is updated with any modification to which files are in the shared directory thus if files were added then they are added to the registry or if the files are removed then they are removed from the registry. \\
+
+If option 5 is selected then the program exits. 
+
+
+
+
+
+\end{document}

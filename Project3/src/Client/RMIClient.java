@@ -3,9 +3,7 @@ package Client;
 import java.rmi.*;
 import java.rmi.server.*;
 import java.rmi.Naming;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.io.*;
 
 import Server.Server;
@@ -14,6 +12,7 @@ public class RMIClient extends UnicastRemoteObject implements Client{
 
     static Integer peerId = 0;
     static String instanceName = null;
+	static String serverAddress = null;
     
     public RMIClient() throws RemoteException
     {
@@ -51,6 +50,10 @@ public class RMIClient extends UnicastRemoteObject implements Client{
             System.exit(1);
         }
 
+		Scanner scan = new Scanner(System.in);
+		System.out.print("Please enter the address of the server to connect to: ");
+		serverAddress = scan.next();
+
         //if (System.getSecurityManager() == null) {
         //    System.setSecurityManager(new RMISecurityManager());
         //}
@@ -78,7 +81,7 @@ public class RMIClient extends UnicastRemoteObject implements Client{
 
         Server server = null;
         try {
-            server = (Server) Naming.lookup("rmi://localhost/Server");
+            server = (Server) Naming.lookup("rmi://"+serverAddress+"/Server");
             File[] files = dir.listFiles();
             List<String> listFiles = new ArrayList<String>();
             for(File file:files)
@@ -105,8 +108,9 @@ public class RMIClient extends UnicastRemoteObject implements Client{
             System.out.println("1 - Search for filename");
             System.out.println("2 - Obtain filename from peer");
             System.out.println("3 - List files in shared directory");
-            System.out.println("4 - Update registry");
-            System.out.println("5 - Exit");
+			System.out.println("4 - List connected peers and shared files");
+            System.out.println("5 - Update registry");
+            System.out.println("6 - Exit");
             System.out.print(">");
 
             String line = scanner.nextLine();
@@ -198,7 +202,26 @@ public class RMIClient extends UnicastRemoteObject implements Client{
                         System.out.println(file.getName());
                     }
                     break;
-                case 4:
+				case 4:
+					HashMap<String, List<Integer>> reg = new HashMap<String, List<Integer>>();
+					try {
+						reg = server.getRegistry();
+						Iterator iter = reg.entrySet().iterator();
+						while(iter.hasNext()){
+							Map.Entry me = (Map.Entry)iter.next();
+							System.out.println("File: "+me.getKey());
+							System.out.print("is on Clients: ");
+							peers = (List<Integer>)me.getValue();
+							for(Integer i : peers){
+								System.out.print(i + " ");
+							}
+							System.out.println("\n");
+						}
+					} catch (Exception e) {
+						System.out.println("\nError - Could not access file registry");
+					}
+					break;
+                case 5:
                     try {
                         File[] files = dir.listFiles();
                         List<String> listFiles = new ArrayList<String>();
@@ -211,7 +234,7 @@ public class RMIClient extends UnicastRemoteObject implements Client{
                         System.out.println("\nError - Cannot update registry");
                     }
                     break;
-                case 5:
+                case 6:
                     exit = true;
                     break;
                 default:

@@ -52,6 +52,11 @@ public class RMIServer extends UnicastRemoteObject implements Server {
         return true;
     }
 
+	@Override
+	public HashMap<String, List<Integer>> getRegistry() throws RemoteException{
+		return registry;
+	}
+
     @Override
     public List search(String filename) throws RemoteException
     {
@@ -71,6 +76,7 @@ public class RMIServer extends UnicastRemoteObject implements Server {
             server = new RMIServer();
             Naming.bind("Server", server);
         } catch (Exception e) {
+			System.out.println(e);
             System.out.println("Error - Server is already bound.");
             System.exit(0);
         }

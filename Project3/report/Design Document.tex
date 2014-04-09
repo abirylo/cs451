@@ -10,8 +10,9 @@
 %title begin
 \begin{flushright}
 Adrian Birylo\\
-CS 550 Project 1\\
-Due Date: 9-16-2013\\
+Daniel Hitchings\\
+CS 451 Project 3\\
+Due Date: 4-8-2014\\
 \end{flushright}
 
 \begin{center}
@@ -22,19 +23,7 @@ Due Date: 9-16-2013\\
 %title end
 
 \subsection*{Preface}
-The project consisted of two projects: RMIServer and RMIClient. The project uses the Java Remote Method Invocation (RMI) to design the simple peer to peer (p2p) system. This p2p design is to use a central registry server where all the peers register themselves and all of the files they have to share. When a peer wants to download a file from another peer the client connects directly to each peer to download the file. Below is the UML diagram showing the relationships of each of the objects and classes. 
-
-\begin{figure}[!h]\
-\begin{center}
-\includegraphics[width=.5\textwidth]{uml.png}
-\caption{UML Diagram for P2P Project}
-\end{center}
-\end{figure}
-
-
-
-
-
+The project consisted of two projects: Centralized and Decentralized. The project uses the Java Remote Method Invocation (RMI) to design the simple peer to peer (p2p) system. The Centralized p2p design is to use a central registry server where all the peers register themselves and all of the files they have to share. When a peer wants to download a file from another peer the client connects directly to each peer to download the file. In the Decentralized p2p design is to use a distributed system where each client is a server as well. The clients have a list of neighbors that they connect to and then messages are passed from neighbor to neighbor until time to live expires. Time to live is decremented by 1 on each hop and once it reaches 0 it will not pass the message. When a peer wants to download a file the peer connects directly to each peer to download the file. 
 
 
 \end{document}

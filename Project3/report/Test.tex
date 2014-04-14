@@ -1,0 +1,159 @@
+\documentclass{article}
+
+\usepackage{graphicx}
+\usepackage{fullpage}%better margins
+
+
+\begin{document}
+
+%title begin
+\begin{flushright}
+Adrian Birylo\\
+Daniel Hitchings\\
+CS 451 Project 3\\
+Due Date: 4-8-2014\\
+\end{flushright}
+
+\begin{center}
+\textbf{\huge{Manual}}
+\end{center}
+
+
+%title end
+
+\subsection*{Preface}
+Below are the manual test ran on the program to test the validity of the peer to peer program. 
+
+\subsection*{Tests}
+
+\begin{enumerate}
+
+\item Start client before server running.\\
+\textbf{Expected}\\
+Error - Index Server not bound. Please start index server before launching client\\
+\textbf{Result}\\
+Error - Index Server not bound. Please start index server before launching client\\
+\textbf{Pass:} True\\
+
+\item Start server and check if running.\\
+\textbf{Expected}\\
+Server is running.\\
+To exit type 'exit'.\\
+\textbf{Result}\\
+Server is running.\\
+To exit type 'exit'.\\
+\textbf{Pass:} True\\
+
+\item Start another instance of the server if one is already running\\
+\textbf{Expected}\\
+Error -Server is already bound.\\
+\textbf{Result}\\
+Error -Server is already bound.\\
+\textbf{Pass:} True\\
+
+
+\item Start client with no id as argument\\
+\textbf{Expected}\\
+Please enter a peer id as a command line argument\\
+\textbf{Result}\\
+Please enter a peer id as a command line argument\\
+\textbf{Pass:} True\\
+
+
+\item Start client with a unique id of 1 after server is running.\\
+\textbf{Expected}\\
+Client running... PeerID = 1\\
+Options:\\
+1 - Search for filename\\
+2 - Obtain filename from peer\\
+3 - List files in shared directory\\
+4 - Update registry\\
+5 - Exit\\
+\textbf{Result}\\
+Client running... PeerID = 1\\
+Options:\\
+1 - Search for filename\\
+2 - Obtain filename from peer\\
+3 - List files in shared directory\\
+4 - Update registry\\
+5 - Exit\\
+\textbf{Pass:} True\\
+
+
+\item Start another client with an id of 1 after another client of id 1 is running.\\
+\textbf{Expected}\\
+Error = Peer 1 is already bound. Please choose a different peer id or restart rmiregistry.\\
+\textbf{Result}\\
+Error = Peer 1 is already bound. Please choose a different peer id or restart rmiregistry.\\
+\textbf{Pass:} True\\
+
+\item Check that client registers file with server. Using files Text1.txt, Text2.txt, and Text2.txt in folder Client1. Only client 1 is running. Then run command 1 and search for Text1.txt, Text2.txt, Text3.txt, and Text4.txt. \\
+\textbf{Expected}\\
+For Text1.txt, Text2.txt and Text3.txt the result should be:\\
+The clients that have the file Text\#.txt are:\\
+Client 1\\
+For Text4.txt the result should be:\\
+There are no peers sharing Text4.txt.\\
+\textbf{Result}\\
+For Text1.txt, Text2.txt and Text3.txt the result should be:\\
+The clients that have the file Text\#.txt are:\\
+Client 1\\
+For Text4.txt the result should be:\\
+\textbf{Pass:} True\\
+
+\item Check that if two clients have the same file that both show up. With client 1 running as in the above test case run client 2 with Text1.txt in the folder Client2. Then run the search command for Text1.txt \\
+\textbf{Expected}\\
+The clients that have the file Text1.txt are:\\
+Client 1\\
+Client 2\\
+\textbf{Result}\\
+The clients that have the file Text1.txt are:\\
+Client 1\\
+Client 2\\
+\textbf{Pass:} True\\
+
+\item Attempt to get a file that does not exist.\\
+\textbf{Expected}\\
+Enter filename: Text11.txt\\
+Enter peer. If no preference enter 0.\\
+0\\
+The file Text11.txt does not exist.\\
+\textbf{Result}\\
+Enter filename: Text11.txt\\
+Enter peer. If no preference enter 0.\\
+0\\
+The file Text11.txt does not exist.\\
+\textbf{Pass:} True\\
+
+\item Obtain file and check if exists. Client1 directory has Text1.txt and Client2 directory does not have Text1.txt. Then in client 2 run the command to get Text1.txt.\\
+\textbf{Expected}\\
+Enter filename: Text1.txt\\
+Enter peer. If no preference enter 0.\\
+0\\
+Then Client2 directory has Text1.txt. \\
+\textbf{Result}\\
+Enter filename: Text1.txt\\
+Enter peer. If no preference enter 0.\\
+0\\
+Then Client2 directory has Text1.txt. \\
+\textbf{Pass:} True\\
+
+\item Add new files to the shared directory for the client and run update registry command and check if registry is update. 
+\textbf{Expected}\\
+Run client. \\
+Add new files to client.\\
+Update registry\\
+Search for file to see if the registry update.\\
+\textbf{Result}\\
+Run client. \\
+Add new files to client.\\
+Update registry\\
+Search for file to see if the registry update.\\
+\textbf{Pass:} True\\
+
+
+
+\end{enumerate}
+
+
+\end{document}

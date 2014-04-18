@@ -20,7 +20,7 @@ typedef std::pair<std::string, int> TStrIntPair;
 
 //Hooray Global Variables!
 TStrIntMap wcMap;
-const char* DELIM = "?\";<>,~`!@#^&*()_+-=/\\:;{}[]|. ";
+const char* DELIM = "?\";<>,~`!@#^&*()_+-=/\\:;{}[]|. \n\t";
 ifstream myFile;
 const int BUFF_SIZE = 4096; //max number of lines for each thread to take from the file.
 std::mutex mapMtx;

@@ -1,3 +1,11 @@
+/*
+Hadoop Wordcount application
+CS451: Distributed and Parallel Computing
+4/22/14
+Daniel Hitchings
+Adrian Birylo
+*/
+
 import java.io.IOException;
 import java.util.*;
 
